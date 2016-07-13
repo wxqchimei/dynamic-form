@@ -1,0 +1,175 @@
+<form action="save.do" method="post" novalidate="novalidate">
+    <input type="hidden" name="formId" value="${formId}" />
+    <input type="hidden" name="category" value="${formId}"/>
+    <table border="0" cellpadding="0" cellspacing="0" class="in-tb margin-top5">
+        <tbody>
+            <tr>
+                <td class="in-lab" width="15%"><em class="required">*</em>类型:</td>
+                <td class="in-ctt" colspan="3"><select id="input_type" name="type"
+                    class="required valid">
+                        <option value="1">文本输入框</option>
+                        <option value="2">日期输入框</option>
+                        <option value="3">复选框</option>
+                        <option value="4">单选框</option>
+                        <option value="5">下拉框</option>
+                        <option value="6">文本区</option>
+                        <option value="50">文本编辑器</option>
+                        <option value="7">图片上传</option>
+                        <option value="8">视频上传</option>
+                        <option value="9">附件上传</option>
+                </select> &nbsp; <label><input type="checkbox"
+                            onclick="$('#_chk_clob1').val(this.checked);"> <input
+                            type="hidden" id="_chk_clob1" name="clob" value="false">大字段</label></td>
+            </tr>
+            <tr>
+                <td class="in-lab" width="15%"><em class="required">*</em>字段名称:</td>
+                <td class="in-ctt" width="35%"><input type="text" name="label" value=""
+                        class="required" maxlength="50" style="width: 180px;"></td>
+                <td class="in-lab" width="15%"><em class="required">*</em>字段代码:</td>
+                <td class="in-ctt" width="35%"><input type="text" name="name" value=""
+                        class="required" maxlength="50" style="width: 180px;"></td>
+            </tr>
+            <tr>
+                <td class="in-lab" width="15%"><em class="required">*</em>必填字段:</td>
+                <td class="in-ctt" width="35%"><label><input type="radio"
+                            name="required" value="true">是</label> &nbsp; <label><input
+                            type="radio" name="required" value="false" checked="checked">否</label></td>
+                <td class="in-lab" width="15%"><em class="required">*</em>一行两列:</td>
+                <td class="in-ctt" width="35%"><label><input type="radio"
+                            name="dblColumn" value="true">是</label> &nbsp; <label><input
+                            type="radio" name="dblColumn" value="false" checked="checked">否</label></td>
+            </tr>
+            <tr>
+                <td class="in-lab" width="15%">默认值:</td>
+                <td class="in-ctt" width="35%"><input type="text" name="defValue" value=""
+                        maxlength="255" style="width: 180px;"></td>
+                <td class="in-lab" width="15%">提示信息:</td>
+                <td class="in-ctt" width="35%"><input type="text" name="prompt" value=""
+                        maxlength="255" style="width: 180px;"></td>
+            </tr>
+        </tbody>
+        <tbody id="input_type_body">
+            <tr class="input_type_1" style="">
+                <td class="in-lab" width="15%">宽度:</td>
+                <td class="in-ctt" width="35%"><input type="text" name="customs_width" value=""
+                        class="{digits:true,min:1,max:99999}" maxlength="5" style="width: 180px;">px</td>
+                <td class="in-lab" width="15%">最大长度:</td>
+                <td class="in-ctt" width="35%"><input type="text" name="customs_maxLength"
+                        value="" class="{digits:true,min:1,max:99999}" maxlength="10"
+                        style="width: 180px;"></td>
+            </tr>
+            <tr class="input_type_1" style="">
+                <td class="in-lab" width="15%">验证代码:</td>
+                <td class="in-ctt" colspan="3"><input type="text" name="customs_validation"
+                        value="" maxlength="255" style="width: 450px;"><span
+                    class="in-prompt" title="使用jquery校验，如 {required:ture}"></span></td>
+            </tr>
+            <tr class="input_type_2" style="display: none;">
+                <td class="in-lab" width="15%">宽度:</td>
+                <td class="in-ctt" width="35%"><input type="text" name="customs_width" value=""
+                        class="{digits:true,min:1,max:99999}" maxlength="5" style="width: 180px;"
+                        disabled="">px</td>
+                <td class="in-lab" width="15%"><em class="required">*</em>日期格式:</td>
+                <td class="in-ctt" width="35%"><select name="customs_datePattern"
+                    class="required" disabled="">
+                        <option>yyyy-MM-dd HH:mm:ss</option>
+                        <option>yyyy-MM-dd</option>
+                        <option>MM-dd HH:mm</option>
+                        <option>MM-dd</option>
+                        <option>yyyy-MM</option>
+                        <option>yyyy</option>
+                </select></td>
+            </tr>
+            <tr class="input_type_5" style="display: none;">
+                <td class="in-lab" width="15%">宽度:</td>
+                <td class="in-ctt" colspan="3"><input type="text" name="customs_width" value=""
+                        class="{digits:true,min:1,max:99999}" maxlength="5" style="width: 180px;"
+                        disabled="">px</td>
+            </tr>
+            <tr class="input_type_3 input_type_4 input_type_5 input_type_100 input_type_101"
+                style="display: none;">
+                <td class="in-lab" width="15%"><em class="required">*</em>可选项:</td>
+                <td class="in-ctt" colspan="3"><textarea name="customs_options"
+                        class="{required:true,maxlength:2000}" style="width: 500px; height: 150px;"
+                        disabled=""></textarea><span class="in-prompt"
+                    title="一行一个选项，格式value或key|value。">&nbsp;</span></td>
+            </tr>
+            <tr class="input_type_6 input_type_50" style="display: none;">
+                <td class="in-lab" width="15%">宽度:</td>
+                <td class="in-ctt" width="35%"><input type="text" name="customs_width" value=""
+                        class="{digits:true,min:1,max:99999}" maxlength="5" style="width: 180px;"
+                        disabled="">px</td>
+                <td class="in-lab" width="15%">高度:</td>
+                <td class="in-ctt" width="35%"><input type="text" name="customs_height"
+                        value="" class="{digits:true,min:1,max:99999}" maxlength="5"
+                        style="width: 180px;" disabled="">px</td>
+            </tr>
+            <tr class="input_type_6" style="display: none;">
+                <td class="in-lab" width="15%">最大长度:</td>
+                <td class="in-ctt" colspan="3"><input type="text" name="customs_maxLength"
+                        value="" class="{digits:true,min:1,max:99999}" maxlength="5"
+                        style="width: 180px;" disabled=""></td>
+            </tr>
+            <tr class="input_type_7 input_type_51" style="display: none;">
+                <td class="in-lab" width="15%">是否压缩:</td>
+                <td class="in-ctt" width="85%" colspan="3"><label><input type="radio"
+                            value="true" name="customs_imageScale" disabled="">是</label> <label><input
+                            type="radio" value="false" name="customs_imageScale" checked="checked"
+                            disabled="">否</label> &nbsp; &nbsp; 宽: <input type="text"
+                        name="customs_imageWidth" maxlength="5" style="width: 120px;"
+                        class="{digits:true,min:1,max:99999}" disabled="">px &nbsp; &nbsp;
+                    高: <input type="text" name="customs_imageHeight" maxlength="5"
+                        style="width: 120px;" class="{digits:true,min:1,max:99999}" disabled="">px
+                    &nbsp; &nbsp; <label><input type="checkbox"
+                            onclick="$('#_chk_customs_imageExact1').val(this.checked);" disabled="">
+                        <input type="hidden" id="_chk_customs_imageExact1" name="customs_imageExact"
+                            value="false" disabled="">拉伸图片</label></td>
+            </tr>
+            <tr class="input_type_51" style="display: none;">
+                <td class="in-lab" width="15%">是否生成缩略图:</td>
+                <td class="in-ctt" width="85%" colspan="3"><label><input type="radio"
+                            value="true" name="customs_thumbnail" disabled="">是</label> <label><input
+                            type="radio" value="false" name="customs_thumbnail" checked="checked"
+                            disabled="">否</label> &nbsp; &nbsp; 宽: <input type="text"
+                        name="customs_thumbnailWidth" maxlength="5" style="width: 120px;"
+                        class="{digits:true,min:1,max:99999}" disabled="">px &nbsp; &nbsp;
+                    高: <input type="text" name="customs_thumbnailHeight" maxlength="5"
+                        style="width: 120px;" class="{digits:true,min:1,max:99999}" disabled="">px</td>
+            </tr>
+            <tr class="input_type_7 input_type_51" style="display: none;">
+                <td class="in-lab" width="15%">是否水印:</td>
+                <td class="in-ctt" width="85%" colspan="3"><label><input type="radio"
+                            value="true" name="customs_imageWatermark" disabled="" />是</label> <label><input
+                            type="radio" value="false" name="customs_imageWatermark"
+                            checked="checked" disabled="">否</label></td>
+            </tr>
+            <tr class="input_type_50" style="display: none;">
+                <td class="in-lab" width="15%"><em class="required">*</em>编辑器工具条:</td>
+                <td class="in-ctt" width="85%" colspan="3"><select name="customs_toolbar"
+                    class="required" disabled="">
+                        <option value="Cms">紧凑工具条</option>
+                        <option value="Basic">简洁工具条</option>
+                </select></td>
+            </tr>
+        </tbody>
+        <tbody>
+            <tr>
+                <td colspan="4" class="in-opt">
+                    <div class="in-btn">
+                        <input type="submit" value="保存">
+                    </div>
+                    <div class="in-btn">
+                        <input type="submit" value="保存并返回" onclick="$('#redirect').val('list');">
+                    </div>
+                    <div class="in-btn">
+                        <input type="submit" value="保存并新增" onclick="$('#redirect').val('create');">
+                    </div>
+                    <div style="clear: both;"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+<script type="text/javascript">
+window.
+</script>

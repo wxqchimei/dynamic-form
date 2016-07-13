@@ -5,14 +5,10 @@ package com.iflytek.epdcloud.dynamicform.entity;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-<<<<<<< HEAD
 import java.util.HashMap;
 import java.util.Map;
 
 import com.iflytek.epdcloud.dynamicform.DynamicFormServer;
-=======
-
->>>>>>> 9880699d3064a4960614ddcefb89238474b0b4e7
 import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
 
 import freemarker.template.TemplateException;
@@ -65,7 +61,6 @@ public abstract class Field extends Entity {
      * @throws IOException
      */
     public void displayConfigHtml(PrintWriter printWriter) throws IOException, TemplateException {
-<<<<<<< HEAD
         printWriter.print(configHtmlPlain());
     }
 
@@ -76,10 +71,6 @@ public abstract class Field extends Entity {
 
         String templateName = this.fieldType.getConfigTemplate();
         return FreemarkerRender.render(templateName, root);
-=======
-        String templateName = this.fieldType.getConfigTemplate();
-        printWriter.print(FreemarkerRender.render(templateName, this));
->>>>>>> 9880699d3064a4960614ddcefb89238474b0b4e7
     }
 
 
@@ -92,7 +83,6 @@ public abstract class Field extends Entity {
      * @throws IOException
      */
     public void displayEditHtml(PrintWriter printWriter) throws IOException, TemplateException {
-<<<<<<< HEAD
         printWriter.print(editHtmlPlain());
     }
 
@@ -106,14 +96,7 @@ public abstract class Field extends Entity {
     }
 
 
-=======
-        String templateName = this.fieldType.getEditTemplate();
-        printWriter.print(FreemarkerRender.render(templateName, this));
-    }
 
-
-
->>>>>>> 9880699d3064a4960614ddcefb89238474b0b4e7
     /**
      * @return the code
      */
