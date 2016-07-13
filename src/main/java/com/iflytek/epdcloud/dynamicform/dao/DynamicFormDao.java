@@ -5,6 +5,8 @@ package com.iflytek.epdcloud.dynamicform.dao;
 
 import javax.sql.DataSource;
 
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
+
 import com.iflytek.epdcloud.dynamicform.entity.Form;
 
 /**
@@ -13,7 +15,9 @@ import com.iflytek.epdcloud.dynamicform.entity.Form;
  * @author suenlai
  * @date 2016年7月11日
  */
-public class DynamicFormDao {
+public class DynamicFormDao extends JdbcDaoSupport {
+
+
     @SuppressWarnings("unused")
     private DynamicFormDao() {};
 
@@ -27,7 +31,22 @@ public class DynamicFormDao {
      * @return
      */
     public Form get(String formId) {
-        return null;
+        String sql =
+                "SELECT t_form.id,t_form.category,t_form.indicator_id FROM t_form where id=:formId";
+        Form entity = getJdbcTemplate().queryForObject(sql, new Object[] {formId},
+                RowMapperFactory.FormRowMapper);
+        return entity;
+    }
+
+    /**
+     * @Description:
+     * @param formId
+     * @return
+     */
+    public int delete(String formId) {
+        String sql = "DELETE FROM t_form where id=:formId";
+        int effectedRows = getJdbcTemplate().update(sql, new Object[] {formId});
+        return effectedRows;
     }
 
 

@@ -18,7 +18,7 @@ import com.iflytek.epdcloud.dynamicform.util.Servlets;
 
 
 /**
- * @description：
+ * @description：动态表单对外服务接口类
  * 
  * @author suenlai
  * @date 2016年7月11日
@@ -70,6 +70,7 @@ public class DynamicFormServer {
      * @return
      */
     public int create(Form form) {
+        // 添加表单表
         return 0;
     }
 
@@ -81,6 +82,8 @@ public class DynamicFormServer {
      * @return
      */
     public int delete(String formId) {
+        // 先删除表单表,
+        // 再删除表单所属的字段表
         return 0;
     }
 
@@ -91,6 +94,8 @@ public class DynamicFormServer {
      * @return
      */
     public Form get(String formId) {
+        // 先查询表单表,
+        // 再查询表单所属的字段表
         return dynamicFormDao.get(formId);
     }
 
@@ -144,24 +149,16 @@ public class DynamicFormServer {
      * @return 参数key-value集合
      */
     public Map<String, String> collectFieldProperties(HttpServletRequest httpRequest) {
-        return Servlets.getParameterMap(httpRequest, this.dynamicFieldHttpParameterPrefix, false);
+        return Servlets.getParameterMap(httpRequest, dynamicFieldHttpParameterPrefix, false);
     }
 
-
-
-    /**
-     * @return the dynamicFieldHttpParameterPrefix
-     */
-    public String getDynamicFieldHttpParameterPrefix() {
-        return this.dynamicFieldHttpParameterPrefix;
-    }
 
 
     /**
      * @param dynamicFieldHttpParameterPrefix the dynamicFieldHttpParameterPrefix to set
      */
     public void setDynamicFieldHttpParameterPrefix(String dynamicFieldHttpParameterPrefix) {
-        this.dynamicFieldHttpParameterPrefix = dynamicFieldHttpParameterPrefix;
+        DynamicFormServer.dynamicFieldHttpParameterPrefix = dynamicFieldHttpParameterPrefix;
     }
 
     /**
