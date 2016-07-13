@@ -61,8 +61,16 @@ public abstract class Field extends Entity {
      * @throws IOException
      */
     public void displayConfigHtml(PrintWriter printWriter) throws IOException, TemplateException {
+        printWriter.print(configHtmlPlain());
+    }
+
+    public String configHtmlPlain() throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("field", this);
+        root.put("field_name_prefix", DynamicFormServer.dynamicFieldHttpParameterPrefix);
+
         String templateName = this.fieldType.getConfigTemplate();
-        printWriter.print(FreemarkerRender.render(templateName, this));
+        return FreemarkerRender.render(templateName, root);
     }
 
 
@@ -75,13 +83,17 @@ public abstract class Field extends Entity {
      * @throws IOException
      */
     public void displayEditHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        String templateName = this.fieldType.getEditTemplate();
+        printWriter.print(editHtmlPlain());
+    }
+
+    public String editHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);
         root.put("field_name_prefix", DynamicFormServer.dynamicFieldHttpParameterPrefix);
-        printWriter.print(FreemarkerRender.render(templateName, this));
-    }
 
+        String templateName = this.fieldType.getEditTemplate();
+        return FreemarkerRender.render(templateName, root);
+    }
 
 
     /**
