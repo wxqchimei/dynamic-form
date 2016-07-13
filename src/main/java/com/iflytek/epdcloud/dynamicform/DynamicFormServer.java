@@ -28,7 +28,11 @@ public class DynamicFormServer {
      * HTTP提交时的动态字段的前缀 <br>
      * injecting property
      */
+<<<<<<< HEAD
     public static String    dynamicFieldHttpParameterPrefix = "custom_";
+=======
+    private String          dynamicFieldHttpParameterPrefix = "custom_";
+>>>>>>> 9880699d3064a4960614ddcefb89238474b0b4e7
     // injecting property
     private String          fieldTypeConfigLocation;
     // injecting property
