@@ -1,0 +1,11 @@
+<div class="inputbox clearfix">
+	<div class="proname">
+		<em class="red">${field.required?'*':''}</em>${field.label}：
+	</div>
+	<div class="procontent">
+		<input type="text" name="${field_name_prefix}${field.code}"
+			class="wpinput" style="width: 358px;" value="${field.defaultValue}"
+			maxlength="${field.maxSize}">
+		<div class="tipinfo" style="color: red;"></div>
+	</div>
+</div>
