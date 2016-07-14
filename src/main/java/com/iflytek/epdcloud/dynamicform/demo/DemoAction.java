@@ -28,9 +28,9 @@ public class DemoAction {
      * @Description:选定指标后,点击添加动态表单,后台创建一个默认的无字段列表的动态表单并返回到页面
      */
     @RequestMapping("/add.do")
-    public String createForm(int indicatorId, byte category) {
-        Form form = new Form(category, indicatorId);
-        form.setCategory(category);
+    public String createForm(int indicatorId, String entityName) {
+        Form form = new Form(entityName, indicatorId);
+        form.setEntityName(entityName);
         form.setIndicatorId(indicatorId);
         dynamicFormService.create(form);
         return "detail.jsp";

@@ -24,7 +24,7 @@ public class Form extends Entity {
     /**
      * 分类,活动还是动态
      */
-    private byte              category;
+    private String            entityName;
     /**
      * 指标ID
      */
@@ -38,9 +38,9 @@ public class Form extends Entity {
         super(id);
     }
 
-    public Form(byte category, int indicatorId) {
+    public Form(String entityName, int indicatorId) {
         super();
-        this.category = category;
+        this.entityName = entityName;
         this.indicatorId = indicatorId;
     }
 
@@ -58,18 +58,19 @@ public class Form extends Entity {
         }
     }
 
+
     /**
-     * @return the category
+     * @return the entityName
      */
-    public byte getCategory() {
-        return this.category;
+    public String getEntityName() {
+        return this.entityName;
     }
 
     /**
-     * @param category the category to set
+     * @param entityName the entityName to set
      */
-    public void setCategory(byte category) {
-        this.category = category;
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
     }
 
     /**

@@ -114,5 +114,10 @@
 			<artifactId>janino</artifactId>
 			<version>${janino.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.iflytek.epdcloud</groupId>
+			<artifactId>sz-edu-archive-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 </project>
