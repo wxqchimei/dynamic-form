@@ -34,6 +34,16 @@ public class Form extends Entity {
      */
     private List<Field>       fields           = new LinkedList<Field>();
 
+    public Form(String id) {
+        super(id);
+    }
+
+    public Form(byte category, int indicatorId) {
+        super();
+        this.category = category;
+        this.indicatorId = indicatorId;
+    }
+
     /**
      * 
      * 

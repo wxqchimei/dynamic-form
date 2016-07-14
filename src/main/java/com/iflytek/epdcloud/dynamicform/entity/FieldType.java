@@ -30,13 +30,16 @@ public class FieldType extends Entity {
      */
     public FieldType(String name, String code, String description, String className,
             String configTemplate, String editTemplate) {
-        super();
         this.name = name;
         this.code = code;
         this.description = description;
         this.className = className;
         this.configTemplate = configTemplate;
         this.editTemplate = editTemplate;
+    }
+
+    public FieldType(String code) {
+        this.code = code;
     }
 
     /**

@@ -37,6 +37,10 @@ public abstract class Field extends Entity {
      */
     private FieldType         fieldType;
     /**
+     * 所属表单
+     */
+    private Form              form;
+    /**
      * 一行几列
      */
     private byte              columns;
@@ -219,6 +223,20 @@ public abstract class Field extends Entity {
      */
     public void setSequence(int sequence) {
         this.sequence = sequence;
+    }
+
+    /**
+     * @return the form
+     */
+    public Form getForm() {
+        return this.form;
+    }
+
+    /**
+     * @param form the form to set
+     */
+    public void setForm(Form form) {
+        this.form = form;
     }
 
 

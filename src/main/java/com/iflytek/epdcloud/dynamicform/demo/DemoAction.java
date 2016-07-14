@@ -29,7 +29,7 @@ public class DemoAction {
      */
     @RequestMapping("/add.do")
     public String createForm(int indicatorId, byte category) {
-        Form form = new Form();
+        Form form = new Form(category, indicatorId);
         form.setCategory(category);
         form.setIndicatorId(indicatorId);
         dynamicFormService.create(form);
