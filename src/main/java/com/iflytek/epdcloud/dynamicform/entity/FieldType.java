@@ -19,23 +19,25 @@ public class FieldType extends Entity {
     private String            name;
     private String            code;
     private String            description;
-    private String            className;
+    private String            fieldClassName;
     private String            configTemplate;
     private String            editTemplate;
+    private String            viewTemplate;
 
     /**
      * @param name
      * @param description
      * @param className
      */
-    public FieldType(String name, String code, String description, String className,
-            String configTemplate, String editTemplate) {
+    public FieldType(String name, String code, String description, String fieldClassName,
+            String configTemplate, String editTemplate, String viewTemplate) {
         this.name = name;
         this.code = code;
         this.description = description;
-        this.className = className;
+        this.fieldClassName = fieldClassName;
         this.configTemplate = configTemplate;
         this.editTemplate = editTemplate;
+        this.viewTemplate = viewTemplate;
     }
 
     public FieldType(String code) {
@@ -56,6 +58,20 @@ public class FieldType extends Entity {
         this.name = name;
     }
 
+
+    /**
+     * @return the fieldClassName
+     */
+    public String getFieldClassName() {
+        return this.fieldClassName;
+    }
+
+    /**
+     * @param fieldClassName the fieldClassName to set
+     */
+    public void setFieldClassName(String fieldClassName) {
+        this.fieldClassName = fieldClassName;
+    }
 
     /**
      * @return the code
@@ -85,19 +101,6 @@ public class FieldType extends Entity {
         this.description = description;
     }
 
-    /**
-     * @return the className
-     */
-    public String getClassName() {
-        return this.className;
-    }
-
-    /**
-     * @param className the className to set
-     */
-    public void setClassName(String className) {
-        this.className = className;
-    }
 
     /**
      * @return the configTemplate
@@ -125,6 +128,20 @@ public class FieldType extends Entity {
      */
     public void setEditTemplate(String editTemplate) {
         this.editTemplate = editTemplate;
+    }
+
+    /**
+     * @return the viewTemplate
+     */
+    public String getViewTemplate() {
+        return this.viewTemplate;
+    }
+
+    /**
+     * @param viewTemplate the viewTemplate to set
+     */
+    public void setViewTemplate(String viewTemplate) {
+        this.viewTemplate = viewTemplate;
     }
 
 

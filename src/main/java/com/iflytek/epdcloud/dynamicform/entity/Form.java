@@ -5,8 +5,12 @@ package com.iflytek.epdcloud.dynamicform.entity;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
 
 import freemarker.template.TemplateException;
 
@@ -26,9 +30,9 @@ public class Form extends Entity {
      */
     private String            entityName;
     /**
-     * 指标ID
+     * 在category中唯一的编号, 在此指所关联的指标ID
      */
-    private int               indicatorId;
+    private String            code;
     /**
      * 字段列表
      */
@@ -38,16 +42,30 @@ public class Form extends Entity {
         super(id);
     }
 
-    public Form(String entityName, int indicatorId) {
+    public Form(String entityName, String code) {
         super();
         this.entityName = entityName;
-        this.indicatorId = indicatorId;
+        this.code = code;
     }
 
     /**
      * 
      * 
-     * @Description:显示到页面表单
+     * @Description:预览表单的模板
+     * @return
+     * @throws TemplateException
+     * @throws IOException
+     */
+    public void displayViewHtml(PrintWriter printWriter) throws IOException, TemplateException {
+        for (Field f : this.fields) {
+            f.displayViewHtml(printWriter);
+        }
+    }
+
+    /**
+     * 
+     * 
+     * @Description:编辑表单的模板
      * @return
      * @throws TemplateException
      * @throws IOException
@@ -58,6 +76,19 @@ public class Form extends Entity {
         }
     }
 
+    /**
+     * 
+     * 
+     * @Description:配置表单的模板
+     * @return
+     * @throws TemplateException
+     * @throws IOException
+     */
+    public void displayConfigHtml(PrintWriter printWriter) throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("form", this);
+        FreemarkerRender.render(printWriter, "form/config.html", root);
+    }
 
     /**
      * @return the entityName
@@ -73,18 +104,20 @@ public class Form extends Entity {
         this.entityName = entityName;
     }
 
+
+
     /**
-     * @return the indicatorId
+     * @return the code
      */
-    public int getIndicatorId() {
-        return this.indicatorId;
+    public String getCode() {
+        return this.code;
     }
 
     /**
-     * @param indicatorId the indicatorId to set
+     * @param code the code to set
      */
-    public void setIndicatorId(int indicatorId) {
-        this.indicatorId = indicatorId;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /**

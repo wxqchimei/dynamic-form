@@ -32,11 +32,15 @@ public class RowMapperFactory {
                                                    if (!rs.next()) {
                                                        return null;
                                                    }
-                                                   return new Form(rs.getString("id"));
+                                                   Form f = new Form(rs.getString("entityName"),
+                                                           rs.getString("code"));
+                                                   f.setId(rs.getString("id"));
+                                                   return f;
                                                }
 
                                            };
     static RowMapper<Field> fieldRowMapper = new RowMapper<Field>() {
+
                                                @Override
                                                public Field mapRow(ResultSet rs, int rowNum)
                                                        throws SQLException {

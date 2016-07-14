@@ -77,15 +77,25 @@ public abstract class Field extends Entity {
         return FreemarkerRender.render(templateName, root);
     }
 
-
-
     /**
-     * 
-     * @Description:显示到页面表单
+     * @Description:
      * @param printWriter
-     * @throws TemplateException
      * @throws IOException
+     * @throws TemplateException
      */
+    public void displayViewHtml(PrintWriter printWriter) throws IOException, TemplateException {
+        printWriter.print(viewHtmlPlain());
+    }
+
+    public String viewHtmlPlain() throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("field", this);
+        root.put("field_name_prefix", DynamicFormServer.dynamicFieldHttpParameterPrefix);
+
+        String templateName = this.fieldType.getViewTemplate();
+        return FreemarkerRender.render(templateName, root);
+    }
+
     public void displayEditHtml(PrintWriter printWriter) throws IOException, TemplateException {
         printWriter.print(editHtmlPlain());
     }

@@ -38,12 +38,22 @@ public class DynamicFormServer {
     private FieldTypeHolder fieldTypeHolder;
     private DynamicFormDao  dynamicFormDao;
 
-
     public void init() {
         fieldTypeHolder = new FieldTypeHolder(fieldTypeConfigLocation);
         dynamicFormDao = new DynamicFormDao(dataSource);
         // 初始化freemarkerRender
         FreemarkerRender.init(templateLocation);
+    }
+
+    /**
+     * 查找匹配fieldTypeCode的fieldType
+     * 
+     * @Description:
+     * @param fieldTypeCode
+     * @return
+     */
+    public FieldType getFieldTypeByCode(String fieldTypeCode) {
+        return fieldTypeHolder.get(fieldTypeCode);
     }
 
     /**
@@ -71,7 +81,7 @@ public class DynamicFormServer {
      */
     public int create(Form form) {
         // 添加表单表
-        return 0;
+        return dynamicFormDao.save(form);
     }
 
     /**
@@ -82,21 +92,25 @@ public class DynamicFormServer {
      * @return
      */
     public int delete(String formId) {
+        int formEffectRow = dynamicFormDao.deleteForm(formId);
         // 先删除表单表,
         // 再删除表单所属的字段表
-        return 0;
+        dynamicFormDao.clearField(formId);
+        return formEffectRow;
     }
 
     /**
      * 
-     * @Description:查询formId指定的Form定义
+     * @Description:查询formId指定的Form定义,内含动态字段列表
      * @param formId
      * @return
      */
     public Form get(String formId) {
         // 先查询表单表,
         // 再查询表单所属的字段表
-        return dynamicFormDao.get(formId);
+        Form form = dynamicFormDao.get(formId);
+        form.setFields(dynamicFormDao.listField(formId));
+        return form;
     }
 
     /**
@@ -107,7 +121,8 @@ public class DynamicFormServer {
      * @return
      */
     public int appendField2Form(Field field, String formId) {
-        return 0;
+        field.setForm(new Form(formId));
+        return dynamicFormDao.addField(field);
     }
 
     /**
@@ -118,8 +133,8 @@ public class DynamicFormServer {
      * @param formId 待操作的表单定义的主键ID
      * @return
      */
-    public int removeFieldFromForm(Field field, String formId) {
-        return 0;
+    public int removeField(String fieldId) {
+        return dynamicFormDao.removeField(fieldId);
     }
 
     /**

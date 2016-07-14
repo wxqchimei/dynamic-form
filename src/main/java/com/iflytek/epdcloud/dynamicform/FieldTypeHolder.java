@@ -44,20 +44,22 @@ class FieldTypeHolder {
         String name = null;
         String code = null;
         String description = null;
-        String className = null;
+        String fieldClassName = null;
         String configTemplate = null;
         String editTemplate = null;
+        String viewTemplate = null;
         FieldType fieldType = null;
         while (rootIterator.hasNext()) {
             Element element = rootIterator.next();
             name = element.element("name").getText();
             name = element.element("code").getText();
             description = element.element("description").getText();
-            className = element.element("className").getText();
+            fieldClassName = element.element("fieldClassName").getText();
             configTemplate = element.element("configHtml").getText();
             editTemplate = element.element("editHtml").getText();
-            fieldType =
-                    new FieldType(name, code, description, className, configTemplate, editTemplate);
+            viewTemplate = element.element("viewHtml").getText();
+            fieldType = new FieldType(name, code, description, fieldClassName, configTemplate,
+                    editTemplate, viewTemplate);
             fieldTypes.add(fieldType);
         }
     }
