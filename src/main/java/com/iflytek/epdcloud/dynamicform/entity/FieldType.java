@@ -152,22 +152,4 @@ public class FieldType extends Entity {
     public void setViewTemplate(String viewTemplate) {
         this.viewTemplate = viewTemplate;
     }
-
-
-    /**
-     * 
-     * @Description:显示配置字段表单
-     * @param printWriter
-     * @throws TemplateException
-     * @throws IOException
-     */
-    public void displayConfigHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        printWriter.print(configHtmlPlain());
-    }
-
-    public String configHtmlPlain() throws IOException, TemplateException {
-        Map<String, Object> root = new HashMap<String, Object>();
-        String templateName = this.getConfigTemplate();
-        return FreemarkerRender.render(templateName, root);
-    }
 }

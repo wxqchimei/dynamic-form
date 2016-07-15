@@ -49,8 +49,9 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         Map<String, Object> args = new HashMap<>();
         args.put("formId", formId);
         try {
-            Form entity = getNamedParameterJdbcTemplate().queryForObject(sql, args,
-                    RowMapperFactory.FormRowMapper);
+            Form entity =
+                    getNamedParameterJdbcTemplate().queryForObject(sql, args,
+                            RowMapperFactory.FormRowMapper);
             return entity;
         } catch (EmptyResultDataAccessException e) {
             LOGGER.warn("结果集为空", e);
@@ -72,8 +73,9 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         args.put("entityName", entityName);
         args.put("code", code);
         try {
-            Form entity = getNamedParameterJdbcTemplate().queryForObject(sql, args,
-                    RowMapperFactory.FormRowMapper);
+            Form entity =
+                    getNamedParameterJdbcTemplate().queryForObject(sql, args,
+                            RowMapperFactory.FormRowMapper);
             return entity;
         } catch (EmptyResultDataAccessException e) {
             LOGGER.warn("结果集为空", e);
@@ -133,9 +135,10 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public int addField(Field field) {
         field.setId(UUIDUtils.getUUID());
-        String sql = "INSERT INTO t_field"
-                + "(id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize)"
-                + "VALUES(:id,:fieldTypeCode,:formId,:code,:label,:columns,:required,:defaultValue,:sequence,:height,:width,:options,:dateFormat,:maxSize);";
+        String sql =
+                "INSERT INTO t_field"
+                        + "(id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize)"
+                        + "VALUES(:id,:fieldTypeCode,:formId,:code,:label,:columns,:required,:defaultValue,:sequence,:height,:width,:options,:dateFormat,:maxSize);";
 
 
         Map<String, Object> args = new HashMap<>();
@@ -148,10 +151,15 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         args.put("required", field.isRequired());
         args.put("defaultValue", field.getDefaultValue());
         args.put("sequence", field.getSequence());
+        args.put("dateFormat", null);
+        args.put("maxSize", null);
+        args.put("height", null);
+        args.put("width", null);
+        args.put("options", null);
         switch (field.getFieldType().getCode()) {
             case "datetime":
                 DateTimeField dtf = (DateTimeField) field;
-                args.put("dataFormat", dtf.getDateFormat());
+                args.put("dateFormat", dtf.getDateFormat());
                 break;
             case "text":
                 TextField tf = (TextField) field;
@@ -218,8 +226,9 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         Map<String, Object> args = new HashMap<>();
         args.put("entityName", entityName);
         args.put("entityId", entityId);
-        List<FieldValue> result = getNamedParameterJdbcTemplate().query(sql, args,
-                RowMapperFactory.fieldValueRowMapper);
+        List<FieldValue> result =
+                getNamedParameterJdbcTemplate().query(sql, args,
+                        RowMapperFactory.fieldValueRowMapper);
         return result;
     }
 

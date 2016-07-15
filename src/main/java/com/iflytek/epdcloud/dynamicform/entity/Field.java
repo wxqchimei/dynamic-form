@@ -59,16 +59,34 @@ public abstract class Field extends Entity {
 
 
     /**
+     * 
+     * @Description:显示配置字段表单
+     * @param printWriter
+     * @throws TemplateException
+     * @throws IOException
+     */
+    public void displayConfigHtml(PrintWriter printWriter) throws IOException, TemplateException {
+        printWriter.print(getConfigHtmlPlain());
+    }
+
+    public String getConfigHtmlPlain() throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("basePath", "http://localhost:8080/sz-edu-archive-web");
+        String templateName = getFieldType().getConfigTemplate();
+        return FreemarkerRender.render(templateName, root);
+    }
+
+    /**
      * @Description:
      * @param printWriter
      * @throws IOException
      * @throws TemplateException
      */
     public void displayViewHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        printWriter.print(viewHtmlPlain());
+        printWriter.print(getViewHtmlPlain());
     }
 
-    public String viewHtmlPlain() throws IOException, TemplateException {
+    public String getViewHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);
         root.put("field_name_prefix", DynamicFormServer.dynamicFieldHttpParameterPrefix);
@@ -78,10 +96,10 @@ public abstract class Field extends Entity {
     }
 
     public void displayEditHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        printWriter.print(editHtmlPlain());
+        printWriter.print(getEditHtmlPlain());
     }
 
-    public String editHtmlPlain() throws IOException, TemplateException {
+    public String getEditHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);
         root.put("field_name_prefix", DynamicFormServer.dynamicFieldHttpParameterPrefix);

@@ -4,37 +4,37 @@
 		<name>日期输入框</name>
 		<code>date</code>
 		<description>日期输入框</description>
-		<fieldClassName>com.iflytek.epdcloud.DateTimeField</fieldClassName>
-		<configTemplate>/fileType/datetime/config.html</configTemplate>
-		<editTemplate>/file-type/datetime/edit.html</editTemplate>
-		<viewTemplate>/file-type/datetime/edit.html</viewTemplate>
+		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.DateTimeField</fieldClassName>
+		<configTemplate>/field-type/datetime/config.html</configTemplate>
+		<editTemplate>/field-type/datetime/edit.html</editTemplate>
+		<viewTemplate>/field-type/datetime/view.html</viewTemplate>
 		
 	</fieldType>
 	<fieldType>
 		<name>文本输入框</name>
 		<code>text</code>
 		<description>单行文本输入框</description>
-		<fieldClassName>com.iflytek.epdcloud.TextField</fieldClassName>
-		<configTemplate>/fileType/text/config.html</configTemplate>
-		<editTemplate>/file-type/text/edit.html</editTemplate>
-		<viewTemplate>/file-type/datetime/edit.html</viewTemplate>
+		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.TextField</fieldClassName>
+		<configTemplate>/field-type/text/config.html</configTemplate>
+		<editTemplate>/field-type/text/edit.html</editTemplate>
+		<viewTemplate>/field-type/text/view.html</viewTemplate>
 	</fieldType>
 	<fieldType>
 		<name>复选框</name>
 		<code>checkbox</code>
 		<description>复选框</description>
-		<fieldClassName>com.iflytek.epdcloud.CheckBoxField</fieldClassName>
-		<configTemplate>/fileType/checkbox/config.html</configTemplate>
-		<editTemplate>/file-type/checkbox/edit.html</editTemplate>
-		<viewTemplate>/file-type/datetime/edit.html</viewTemplate>
+		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.CheckBoxField</fieldClassName>
+		<configTemplate>/field-type/checkbox/config.html</configTemplate>
+		<editTemplate>/field-type/checkbox/edit.html</editTemplate>
+		<viewTemplate>/field-type/checkbox/view.html</viewTemplate>
 	</fieldType>
 	<fieldType>
 		<name>多行文本输入框</name>
 		<code>textarea</code>
 		<description>多行文本输入框</description>
-		<fieldClassName>com.iflytek.epdcloud.TextAreaField</fieldClassName>
-		<configTemplate>/fileType/textarea/config.html</configTemplate>
-		<editTemplate>/file-type/textarea/edit.html</editTemplate>
-		<viewTemplate>/file-type/datetime/edit.html</viewTemplate>
+		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.TextAreaField</fieldClassName>
+		<configTemplate>/field-type/textarea/config.html</configTemplate>
+		<editTemplate>/field-type/textarea/edit.html</editTemplate>
+		<viewTemplate>/field-type/textarea/view.html</viewTemplate>
 	</fieldType>
 </fieldTypes>

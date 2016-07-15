@@ -52,7 +52,7 @@ class FieldTypeHolder {
         while (rootIterator.hasNext()) {
             Element element = rootIterator.next();
             name = element.element("name").getText();
-            name = element.element("code").getText();
+            code = element.element("code").getText();
             description = element.element("description").getText();
             fieldClassName = element.element("fieldClassName").getText();
             configTemplate = element.element("configTemplate").getText();
