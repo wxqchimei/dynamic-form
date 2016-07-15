@@ -7,6 +7,8 @@
 		<fieldClassName>com.iflytek.epdcloud.DateTimeField</fieldClassName>
 		<configTemplate>/fileType/datetime/config.html</configTemplate>
 		<editTemplate>/file-type/datetime/edit.html</editTemplate>
+		<viewTemplate>/file-type/datetime/edit.html</viewTemplate>
+		
 	</fieldType>
 	<fieldType>
 		<name>文本输入框</name>
@@ -15,6 +17,7 @@
 		<fieldClassName>com.iflytek.epdcloud.TextField</fieldClassName>
 		<configTemplate>/fileType/text/config.html</configTemplate>
 		<editTemplate>/file-type/text/edit.html</editTemplate>
+		<viewTemplate>/file-type/datetime/edit.html</viewTemplate>
 	</fieldType>
 	<fieldType>
 		<name>复选框</name>
@@ -23,6 +26,7 @@
 		<fieldClassName>com.iflytek.epdcloud.CheckBoxField</fieldClassName>
 		<configTemplate>/fileType/checkbox/config.html</configTemplate>
 		<editTemplate>/file-type/checkbox/edit.html</editTemplate>
+		<viewTemplate>/file-type/datetime/edit.html</viewTemplate>
 	</fieldType>
 	<fieldType>
 		<name>多行文本输入框</name>
@@ -31,5 +35,6 @@
 		<fieldClassName>com.iflytek.epdcloud.TextAreaField</fieldClassName>
 		<configTemplate>/fileType/textarea/config.html</configTemplate>
 		<editTemplate>/file-type/textarea/edit.html</editTemplate>
+		<viewTemplate>/file-type/datetime/edit.html</viewTemplate>
 	</fieldType>
 </fieldTypes>

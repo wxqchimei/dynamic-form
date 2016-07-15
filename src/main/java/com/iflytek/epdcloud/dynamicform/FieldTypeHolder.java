@@ -34,8 +34,8 @@ class FieldTypeHolder {
         SAXReader saxReader = new SAXReader();
         Document document = null;
         try {
-            document = saxReader.read(Thread.currentThread().getContextClassLoader()
-                    .getResourceAsStream(fieldTypeConfigLocation));
+            document = saxReader
+                    .read(FieldTypeHolder.class.getResourceAsStream(fieldTypeConfigLocation));
         } catch (DocumentException e) {
             e.printStackTrace();
         }
@@ -55,9 +55,9 @@ class FieldTypeHolder {
             name = element.element("code").getText();
             description = element.element("description").getText();
             fieldClassName = element.element("fieldClassName").getText();
-            configTemplate = element.element("configHtml").getText();
-            editTemplate = element.element("editHtml").getText();
-            viewTemplate = element.element("viewHtml").getText();
+            configTemplate = element.element("configTemplate").getText();
+            editTemplate = element.element("editTemplate").getText();
+            viewTemplate = element.element("viewTemplate").getText();
             fieldType = new FieldType(name, code, description, fieldClassName, configTemplate,
                     editTemplate, viewTemplate);
             fieldTypes.add(fieldType);

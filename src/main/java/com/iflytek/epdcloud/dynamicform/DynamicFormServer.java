@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.iflytek.epdcloud.dynamicform.dao.DynamicFormDao;
 import com.iflytek.epdcloud.dynamicform.entity.Field;
 import com.iflytek.epdcloud.dynamicform.entity.FieldType;
@@ -23,6 +25,7 @@ import com.iflytek.epdcloud.dynamicform.util.Servlets;
  * @author suenlai
  * @date 2016年7月11日
  */
+@Transactional
 public class DynamicFormServer {
     /**
      * HTTP提交时的动态字段的前缀 <br>
@@ -109,9 +112,31 @@ public class DynamicFormServer {
         // 先查询表单表,
         // 再查询表单所属的字段表
         Form form = dynamicFormDao.get(formId);
+        if (form == null) {
+            return null;
+        }
         form.setFields(dynamicFormDao.listField(formId));
         return form;
     }
+
+    /**
+     * @Description:根据实体名称和实体名称内的编码查找表单
+     * @param entityName
+     * @param code
+     * @return
+     */
+    public Form getForm(String entityName, String code) {
+        // 先查询表单表,
+
+        Form form = dynamicFormDao.getForm(entityName, code);
+        if (form == null) {
+            return null;
+        }
+        // 再查询表单所属的字段表
+        form.setFields(dynamicFormDao.listField(form.getId()));
+        return form;
+    }
+
 
     /**
      * 
@@ -183,5 +208,11 @@ public class DynamicFormServer {
         this.dataSource = dataSource;
     }
 
+    /**
+     * @param templateLocation the templateLocation to set
+     */
+    public void setTemplateLocation(String templateLocation) {
+        this.templateLocation = templateLocation;
+    }
 
 }

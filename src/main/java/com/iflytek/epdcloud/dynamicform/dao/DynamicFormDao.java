@@ -51,13 +51,30 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
     }
 
     /**
+     * @Description:
+     * @param entityName
+     * @param code
+     * @return
+     */
+    public Form getForm(String entityName, String code) {
+        String sql =
+                "SELECT t_form.id,t_form.entityName,t_form.code FROM t_form where entityName=:entityName and code=:code";
+        Map<String, Object> args = new HashMap<>();
+        args.put("entityName", entityName);
+        args.put("code", code);
+        Form entity = getNamedParameterJdbcTemplate().queryForObject(sql, args,
+                RowMapperFactory.FormRowMapper);
+        return entity;
+    }
+
+    /**
      * @Description:创建表单定义
      * @param formId
      * @return
      */
     public int save(Form form) {
         form.setId(UUIDUtils.getUUID());
-        String sql = "INSERT t_form (id,entityName,code) VALUES(:id,:entityName,:code)";
+        String sql = "INSERT into t_form (id,entityName,code) VALUES(:id,:entityName,:code)";
         Map<String, Object> args = new HashMap<>();
         args.put("id", form.getId());
         args.put("entityName", form.getEntityName());
@@ -202,7 +219,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public List<Field> listField(String formId) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSiz FROM t_field where formId=:formId";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize FROM t_field where formId=:formId";
         Map<String, Object> args = new HashMap<>();
         args.put("formId", formId);
         List<Field> result =
@@ -222,4 +239,6 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         int effectedRows = getNamedParameterJdbcTemplate().update(sql, args);
         return effectedRows;
     }
+
+
 }

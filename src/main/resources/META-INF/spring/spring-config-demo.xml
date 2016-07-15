@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 	<!-- 动态表单spring配置 -->
-	<bean id="dynamicFormServer" class="com.iflytek.epdcloud.dynamicform.DynamicFormServer">
+	<bean id="dynamicFormServer" class="com.iflytek.epdcloud.dynamicform.DynamicFormServer" init-method="init">
 		<!-- 动态字段在http上参数的约定前缀,默认为custom_ -->
 		<property name="dynamicFieldHttpParameterPrefix" value="custom_"></property>
 		<!-- 文件类别定义xml配置文件位置 -->
