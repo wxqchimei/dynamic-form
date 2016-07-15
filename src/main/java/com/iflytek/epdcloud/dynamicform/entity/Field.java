@@ -14,7 +14,7 @@ import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
 import freemarker.template.TemplateException;
 
 /**
- * @description：
+ * @description：字段属性信息定义实体
  * 
  * @author suenlai
  * @date 2016年7月11日
@@ -57,25 +57,6 @@ public abstract class Field extends Entity {
      */
     private int               sequence;
 
-    /**
-     * 
-     * @Description:显示配置字段表单
-     * @param printWriter
-     * @throws TemplateException
-     * @throws IOException
-     */
-    public void displayConfigHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        printWriter.print(configHtmlPlain());
-    }
-
-    public String configHtmlPlain() throws IOException, TemplateException {
-        Map<String, Object> root = new HashMap<String, Object>();
-        root.put("field", this);
-        root.put("field_name_prefix", DynamicFormServer.dynamicFieldHttpParameterPrefix);
-
-        String templateName = this.fieldType.getConfigTemplate();
-        return FreemarkerRender.render(templateName, root);
-    }
 
     /**
      * @Description:

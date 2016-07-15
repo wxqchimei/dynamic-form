@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
 
 import freemarker.template.TemplateException;
@@ -132,6 +134,20 @@ public class Form extends Entity {
      */
     public void setFields(List<Field> fields) {
         this.fields = fields;
+    }
+
+    /**
+     * @Description:根据字段编码来查找相应的字段
+     * @param key
+     * @return
+     */
+    public Field findFieldBy(String fieldCode) {
+        for (Field f : fields) {
+            if (StringUtils.equals(f.getCode(), fieldCode)) {
+                return f;
+            }
+        }
+        return null;
     }
 
 

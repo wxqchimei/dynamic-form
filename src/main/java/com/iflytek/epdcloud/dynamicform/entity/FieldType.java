@@ -3,8 +3,17 @@
  */
 package com.iflytek.epdcloud.dynamicform.entity;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
+
+import freemarker.template.TemplateException;
+
 /**
- * @description：
+ * @description：字段元信息类型
  * 
  * @author suenlai
  * @date 2016年7月11日
@@ -145,5 +154,20 @@ public class FieldType extends Entity {
     }
 
 
+    /**
+     * 
+     * @Description:显示配置字段表单
+     * @param printWriter
+     * @throws TemplateException
+     * @throws IOException
+     */
+    public void displayConfigHtml(PrintWriter printWriter) throws IOException, TemplateException {
+        printWriter.print(configHtmlPlain());
+    }
 
+    public String configHtmlPlain() throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<String, Object>();
+        String templateName = this.getConfigTemplate();
+        return FreemarkerRender.render(templateName, root);
+    }
 }

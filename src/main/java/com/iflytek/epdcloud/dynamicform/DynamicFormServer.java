@@ -3,6 +3,8 @@
  */
 package com.iflytek.epdcloud.dynamicform;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.iflytek.epdcloud.dynamicform.dao.DynamicFormDao;
 import com.iflytek.epdcloud.dynamicform.entity.Field;
 import com.iflytek.epdcloud.dynamicform.entity.FieldType;
+import com.iflytek.epdcloud.dynamicform.entity.FieldValue;
 import com.iflytek.epdcloud.dynamicform.entity.Form;
 import com.iflytek.epdcloud.dynamicform.util.Servlets;
 
@@ -164,23 +167,50 @@ public class DynamicFormServer {
 
     /**
      * 
-     * @Description:根据业务模型主键和动态表单获取所有的字段的键值对
+     * @Description:根据业务模型主键和动态表单获取所有的字段的键值
      * @param identity
      * @param form 须设置category值和指标ID
      * @return 字段键值列表
      */
-    public Map<String, String> get(String identity, Form form) {
-        return null;
+    public List<FieldValue> get(String entityName, String entityId) {
+        return dynamicFormDao.listFieldValue(entityName, entityId);
     }
 
     /**
      * 
      * @Description: 设置动态表单字段的键值对
-     * @param identity
+     * @param identity 业务模型的ID
      * @param form 须设置category值和指标ID
      * @param customs 字段键值列表
      */
-    public void set(String identity, Form form, Map<String, String> customs) {}
+    public void set(String entityId, String entityName, Map<String, String> customs,
+            String formId) {
+
+        Form form = get(formId);
+        Iterator<String> keysIterator = customs.keySet().iterator();
+
+        List<FieldValue> parameters = new LinkedList<>();
+        FieldValue fieldValue = null;
+        while (keysIterator.hasNext()) {
+            String key = keysIterator.next();
+            String val = customs.get(key);
+            Field matchField = form.findFieldBy(key);
+            if (matchField == null) {
+                continue;
+            }
+            String fieldTypeCode = matchField.getFieldType().getCode();
+
+            fieldValue = new FieldValue();
+            fieldValue.setEntityName(entityName);
+            fieldValue.setEntityId(entityId);
+            fieldValue.setKey(key);
+            fieldValue.setFieldTypeCode(fieldTypeCode);
+            fieldValue.setVal(val);
+            parameters.add(fieldValue);
+        }
+        dynamicFormDao.addFieldValue(parameters);
+
+    }
 
     /**
      * 

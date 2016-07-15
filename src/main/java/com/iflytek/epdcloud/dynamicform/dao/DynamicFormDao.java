@@ -4,17 +4,20 @@
 package com.iflytek.epdcloud.dynamicform.dao;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
 import com.iflytek.epdcloud.dynamicform.entity.CheckBoxField;
 import com.iflytek.epdcloud.dynamicform.entity.DateTimeField;
 import com.iflytek.epdcloud.dynamicform.entity.Field;
+import com.iflytek.epdcloud.dynamicform.entity.FieldValue;
 import com.iflytek.epdcloud.dynamicform.entity.Form;
 import com.iflytek.epdcloud.dynamicform.entity.TextAreaField;
 import com.iflytek.epdcloud.dynamicform.entity.TextField;
@@ -27,7 +30,7 @@ import com.iflytek.epdcloud.eduarchive.common.utils.UUIDUtils;
  * @date 2016年7月11日
  */
 public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
-
+    protected static final Logger LOGGER = LoggerFactory.getLogger(DynamicFormDao.class);
 
     @SuppressWarnings("unused")
     private DynamicFormDao() {};
@@ -45,9 +48,15 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         String sql = "SELECT t_form.id,t_form.entityName,t_form.code FROM t_form where id=:formId";
         Map<String, Object> args = new HashMap<>();
         args.put("formId", formId);
-        Form entity = getNamedParameterJdbcTemplate().queryForObject(sql, args,
-                RowMapperFactory.FormRowMapper);
-        return entity;
+        try {
+            Form entity = getNamedParameterJdbcTemplate().queryForObject(sql, args,
+                    RowMapperFactory.FormRowMapper);
+            return entity;
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.warn("结果集为空", e);
+            return null;
+        }
+
     }
 
     /**
@@ -62,9 +71,14 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         Map<String, Object> args = new HashMap<>();
         args.put("entityName", entityName);
         args.put("code", code);
-        Form entity = getNamedParameterJdbcTemplate().queryForObject(sql, args,
-                RowMapperFactory.FormRowMapper);
-        return entity;
+        try {
+            Form entity = getNamedParameterJdbcTemplate().queryForObject(sql, args,
+                    RowMapperFactory.FormRowMapper);
+            return entity;
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.warn("结果集为空", e);
+            return null;
+        }
     }
 
     /**
@@ -162,54 +176,6 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         return effectedRows;
     }
 
-    /**
-     * 
-     * @Description:清除业务实体关联的动态字段值
-     * @param entityName
-     * @param entityId
-     * @return
-     */
-    public int cleanFieldValue(String entityName, String entityId) {
-        String sql = "DELETE FROM t_fieldValue where entityName=:entityName and entityId=:entityId";
-        Map<String, Object> args = new HashMap<>();
-        args.put("entityName", entityName);
-        args.put("entityId", entityId);
-        int effectedRows = getNamedParameterJdbcTemplate().update(sql, args);
-        return effectedRows;
-    }
-
-    /**
-     * 
-     * @Description: 设置业务实体关联的动态字段值
-     * @param customFieldValue
-     * @param entityName
-     * @param entityId
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public int setFieldValue(Map<String, String> customFieldValue, String entityName,
-            String entityId) {
-        Iterator<String> iterator = customFieldValue.keySet().iterator();
-        HashMap<String, String>[] argsArray = new HashMap[customFieldValue.size()];
-
-        HashMap<String, String> args = null;
-        int idx = 0;
-        while (iterator.hasNext()) {
-            args = new HashMap<>();
-            String key = iterator.next();
-            String val = customFieldValue.get(key);
-            args.put("id", UUIDUtils.getUUID());
-            args.put("entityName", entityName);
-            args.put("entityId", entityId);
-            args.put("key", key);
-            args.put("val", val);
-            argsArray[idx++] = args;
-        }
-        String sql =
-                "INSERT INTO t_fieldValue (id,entityId,entityName,key,val) VALUES(:id,:entityId,:entityName,:key,:val)";
-        int[] effectedRows = getNamedParameterJdbcTemplate().batchUpdate(sql, argsArray);
-        return effectedRows.length;
-    }
 
     /**
      * 
@@ -239,6 +205,70 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         int effectedRows = getNamedParameterJdbcTemplate().update(sql, args);
         return effectedRows;
     }
+
+    /**
+     * @Description:
+     * @param entityName
+     * @param entityId
+     * @return
+     */
+    public List<FieldValue> listFieldValue(String entityName, String entityId) {
+        String sql =
+                "SELECT id,fieldTypeCode,entityName,entityId,key,val FROM t_fieldValue where entityName=:entityName and entityId=:entityId";
+        Map<String, Object> args = new HashMap<>();
+        args.put("entityName", entityName);
+        args.put("entityId", entityId);
+        List<FieldValue> result = getNamedParameterJdbcTemplate().query(sql, args,
+                RowMapperFactory.fieldValueRowMapper);
+        return result;
+    }
+
+    /**
+     * 
+     * @Description:清除业务实体关联的动态字段值
+     * @param entityName
+     * @param entityId
+     * @return
+     */
+    public int cleanFieldValue(String entityName, String entityId) {
+        String sql = "DELETE FROM t_fieldValue where entityName=:entityName and entityId=:entityId";
+        Map<String, Object> args = new HashMap<>();
+        args.put("entityName", entityName);
+        args.put("entityId", entityId);
+        int effectedRows = getNamedParameterJdbcTemplate().update(sql, args);
+        return effectedRows;
+    }
+
+    /**
+     * 设置业务实体关联的动态字段值
+     * 
+     * @Description:
+     * @param fieldValues
+     * @return
+     */
+    public int addFieldValue(List<FieldValue> fieldValues) {
+        @SuppressWarnings("unchecked")
+        HashMap<String, String>[] argsArray = new HashMap[fieldValues.size()];
+
+        HashMap<String, String> args = null;
+        int idx = 0;
+        for (FieldValue fv : fieldValues) {
+            fv.setId(UUIDUtils.getUUID());
+            args = new HashMap<>();
+            args.put("id", fv.getId());
+            args.put("fieldTypeCode", fv.getFieldTypeCode());
+            args.put("entityName", fv.getEntityName());
+            args.put("entityId", fv.getEntityId());
+            args.put("key", fv.getKey());
+            args.put("val", fv.getVal());
+            argsArray[idx++] = args;
+        }
+        String sql =
+                "INSERT INTO t_fieldValue (id,entityId,entityName,key,val) VALUES(:id,:entityId,:entityName,:key,:val)";
+        int[] effectedRows = getNamedParameterJdbcTemplate().batchUpdate(sql, argsArray);
+        return effectedRows.length;
+    }
+
 
 
 }
