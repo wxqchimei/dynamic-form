@@ -26,33 +26,21 @@
 	<description>Ant DynamicForm JSP Tag Library.</description>
 
 	<tag>
-		<name>edit</name>
-		<tag-class>org.apache.shiro.web.tags.HasPermissionTag</tag-class>
+		<name>fieldType</name>
+		<tag-class>com.iflytek.epdcloud.dynamicform.tag.FieldTypeTag</tag-class>
 		<body-content>JSP</body-content>
-		<description>Displays body content only if the current Subject (user)
-			'has' (implies) the specified permission (i.e the user has the
-			specified ability).
+		<description>loading FieldType instance by code into pagecontext
+			attribute which var ref
 		</description>
 		<attribute>
-			<name>name</name>
+			<name>code</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	</tag>
-
-	<tag>
-		<name>config</name>
-		<tag-class>org.apache.shiro.web.tags.LacksPermissionTag</tag-class>
-		<body-content>JSP</body-content>
-		<description>Displays body content only if the current Subject (user)
-			does
-			NOT have (not imply) the specified permission (i.e. the user lacks the
-			specified ability)
-		</description>
 		<attribute>
-			<name>name</name>
+			<name>var</name>
 			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 </taglib>
