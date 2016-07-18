@@ -2,7 +2,7 @@
 <fieldTypes>
 	<fieldType>
 		<name>日期输入框</name>
-		<code>date</code>
+		<code>datetime</code>
 		<description>日期输入框</description>
 		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.DateTimeField</fieldClassName>
 		<configTemplate>/field-type/datetime/config.html</configTemplate>

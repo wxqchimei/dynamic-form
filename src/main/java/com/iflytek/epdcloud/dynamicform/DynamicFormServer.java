@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import com.iflytek.epdcloud.dynamicform.dao.DynamicFormDao;
 import com.iflytek.epdcloud.dynamicform.entity.Field;
@@ -59,7 +60,11 @@ public class DynamicFormServer {
      * @return
      */
     public FieldType getFieldTypeByCode(String fieldTypeCode) {
-        return fieldTypeHolder.get(fieldTypeCode);
+        FieldType fieldType = fieldTypeHolder.get(fieldTypeCode);
+        Assert.notNull(fieldType,
+                "找不到" + fieldTypeCode + "对应的字段类型, 请查看fieldType.xml中的code与数据库是否一致");
+        return fieldType;
+
     }
 
     /**
@@ -87,7 +92,7 @@ public class DynamicFormServer {
      */
     public int create(Form form) {
         // 添加表单表
-        return dynamicFormDao.save(form);
+        return dynamicFormDao.saveForm(form);
     }
 
     /**
@@ -111,14 +116,18 @@ public class DynamicFormServer {
      * @param formId
      * @return
      */
-    public Form get(String formId) {
+    public Form getForm(String formId) {
         // 先查询表单表,
         // 再查询表单所属的字段表
-        Form form = dynamicFormDao.get(formId);
+        Form form = dynamicFormDao.getForm(formId);
         if (form == null) {
             return null;
         }
-        form.setFields(dynamicFormDao.listField(formId));
+        List<Field> fields = dynamicFormDao.listField(form.getId());
+        for (Field f : fields) {
+            f.setFieldType(getFieldTypeByCode(f.getFieldType().getCode()));
+        }
+        form.setFields(fields);
         return form;
     }
 
@@ -136,9 +145,29 @@ public class DynamicFormServer {
             return null;
         }
         // 再查询表单所属的字段表
-        form.setFields(dynamicFormDao.listField(form.getId()));
+
+        List<Field> fields = dynamicFormDao.listField(form.getId());
+        for (Field f : fields) {
+            f.setFieldType(getFieldTypeByCode(f.getFieldType().getCode()));
+        }
+        form.setFields(fields);
         return form;
     }
+
+    /**
+     * @Description:
+     * @param fieldId
+     * @return
+     */
+    public Field getField(String fieldId) {
+        Field entity = dynamicFormDao.getField(fieldId);
+        String fieldTypeCode = entity.getFieldType().getCode();
+        String formId = entity.getForm().getId();
+        entity.setFieldType(getFieldTypeByCode(fieldTypeCode));
+        entity.setForm(dynamicFormDao.getForm(formId));
+        return entity;
+    }
+
 
 
     /**
@@ -172,7 +201,7 @@ public class DynamicFormServer {
      * @param form 须设置category值和指标ID
      * @return 字段键值列表
      */
-    public List<FieldValue> get(String entityName, String entityId) {
+    public List<FieldValue> list(String entityName, String entityId) {
         return dynamicFormDao.listFieldValue(entityName, entityId);
     }
 
@@ -186,7 +215,7 @@ public class DynamicFormServer {
     public void set(String entityId, String entityName, Map<String, String> customs,
             String formId) {
 
-        Form form = get(formId);
+        Form form = getForm(formId);
         Iterator<String> keysIterator = customs.keySet().iterator();
 
         List<FieldValue> parameters = new LinkedList<>();
@@ -244,5 +273,7 @@ public class DynamicFormServer {
     public void setTemplateLocation(String templateLocation) {
         this.templateLocation = templateLocation;
     }
+
+
 
 }

@@ -3,8 +3,6 @@
  */
 package com.iflytek.epdcloud.dynamicform.entity;
 
-import java.util.List;
-
 /**
  * @description：
  * 
@@ -16,19 +14,22 @@ public class CheckBoxField extends Field {
      * 
      */
     private static final long serialVersionUID = 857082671538993802L;
-    private List<String>      options;
+    /**
+     * json数组字符串
+     */
+    private String            options;
 
     /**
      * @return the options
      */
-    public List<String> getOptions() {
+    public String getOptions() {
         return this.options;
     }
 
     /**
      * @param options the options to set
      */
-    public void setOptions(List<String> options) {
+    public void setOptions(String options) {
         this.options = options;
     }
 

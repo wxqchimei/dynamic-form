@@ -5,6 +5,7 @@ package com.iflytek.epdcloud.dynamicform.entity;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +50,10 @@ public abstract class Field extends Entity {
      */
     private boolean           required;
     /**
+     * jquery校验规则
+     */
+    private String            validation;
+    /**
      * 默认值
      */
     private String            defaultValue;
@@ -71,6 +76,7 @@ public abstract class Field extends Entity {
 
     public String getConfigHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
+        root.put("field", this);
         root.put("basePath", "http://localhost:8080/sz-edu-archive-web");
         String templateName = getFieldType().getConfigTemplate();
         return FreemarkerRender.render(templateName, root);
@@ -95,8 +101,8 @@ public abstract class Field extends Entity {
         return FreemarkerRender.render(templateName, root);
     }
 
-    public void displayEditHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        printWriter.print(getEditHtmlPlain());
+    public void displayEditHtml(Writer writer) throws IOException, TemplateException {
+        writer.write(getEditHtmlPlain());
     }
 
     public String getEditHtmlPlain() throws IOException, TemplateException {

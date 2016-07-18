@@ -5,6 +5,7 @@ package com.iflytek.epdcloud.dynamicform.entity;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,9 +73,9 @@ public class Form extends Entity {
      * @throws TemplateException
      * @throws IOException
      */
-    public void displayEditHtml(PrintWriter printWriter) throws IOException, TemplateException {
+    public void displayEditHtml(Writer writer) throws IOException, TemplateException {
         for (Field f : this.fields) {
-            f.displayEditHtml(printWriter);
+            f.displayEditHtml(writer);
         }
     }
 
@@ -86,10 +87,10 @@ public class Form extends Entity {
      * @throws TemplateException
      * @throws IOException
      */
-    public void displayConfigHtml(PrintWriter printWriter) throws IOException, TemplateException {
+    public void displayConfigHtml(Writer writer) throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("form", this);
-        FreemarkerRender.render(printWriter, "form/config.html", root);
+        FreemarkerRender.render(writer, "form/config.html", root);
     }
 
     /**

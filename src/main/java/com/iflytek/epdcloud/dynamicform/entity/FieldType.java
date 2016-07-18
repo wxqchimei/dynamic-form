@@ -3,15 +3,6 @@
  */
 package com.iflytek.epdcloud.dynamicform.entity;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
-
-import freemarker.template.TemplateException;
-
 /**
  * @description：字段元信息类型
  * 

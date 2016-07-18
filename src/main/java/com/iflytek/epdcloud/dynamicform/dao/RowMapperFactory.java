@@ -5,9 +5,7 @@ package com.iflytek.epdcloud.dynamicform.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.iflytek.epdcloud.dynamicform.entity.CheckBoxField;
@@ -77,10 +75,9 @@ public class RowMapperFactory {
                                                                              new CheckBoxField();
                                                                      String options = rs
                                                                              .getString("options");
-                                                                     checkBoxField.setOptions(Arrays
-                                                                             .asList(StringUtils
-                                                                                     .split(options,
-                                                                                             ",")));
+
+                                                                     checkBoxField
+                                                                             .setOptions(options);
                                                                      entity = checkBoxField;
 
                                                                      break;
@@ -88,6 +85,7 @@ public class RowMapperFactory {
                                                                      throw new RuntimeException(
                                                                              "未知或未加载的字段类型");
                                                              }
+                                                             entity.setId(rs.getString("id"));
                                                              entity.setLabel(rs.getString("label"));
                                                              entity.setCode(rs.getString("code"));
                                                              entity.setColumns(
