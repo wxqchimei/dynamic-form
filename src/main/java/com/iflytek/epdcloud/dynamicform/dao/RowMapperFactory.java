@@ -14,6 +14,8 @@ import com.iflytek.epdcloud.dynamicform.entity.Field;
 import com.iflytek.epdcloud.dynamicform.entity.FieldType;
 import com.iflytek.epdcloud.dynamicform.entity.FieldValue;
 import com.iflytek.epdcloud.dynamicform.entity.Form;
+import com.iflytek.epdcloud.dynamicform.entity.RadioBoxField;
+import com.iflytek.epdcloud.dynamicform.entity.SelectField;
 import com.iflytek.epdcloud.dynamicform.entity.TextAreaField;
 import com.iflytek.epdcloud.dynamicform.entity.TextField;
 
@@ -79,7 +81,21 @@ public class RowMapperFactory {
                                                                      checkBoxField
                                                                              .setOptions(options);
                                                                      entity = checkBoxField;
+                                                                 case "radiobox":
+                                                                     RadioBoxField radioBoxField =
+                                                                             new RadioBoxField();
+                                                                     String ops = rs
+                                                                             .getString("options");
 
+                                                                     radioBoxField.setOptions(ops);
+                                                                     entity = radioBoxField;
+                                                                 case "select":
+                                                                     SelectField sf =
+                                                                             new SelectField();
+                                                                     String sop = rs
+                                                                             .getString("options");
+                                                                     sf.setOptions(sop);
+                                                                     entity = sf;
                                                                      break;
                                                                  default:
                                                                      throw new RuntimeException(
@@ -91,7 +107,7 @@ public class RowMapperFactory {
                                                              entity.setColumns(
                                                                      rs.getByte("columns"));
                                                              entity.setDefaultValue(
-                                                                     rs.getString("fieldTypeCode"));
+                                                                     rs.getString("defaultValue"));
                                                              entity.setRequired(
                                                                      rs.getBoolean("required"));
                                                              entity.setSequence(

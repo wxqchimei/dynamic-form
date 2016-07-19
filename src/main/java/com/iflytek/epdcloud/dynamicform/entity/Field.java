@@ -254,6 +254,20 @@ public abstract class Field extends Entity {
         this.form = form;
     }
 
+    /**
+     * @return the validation
+     */
+    public String getValidation() {
+        return this.validation;
+    }
+
+    /**
+     * @param validation the validation to set
+     */
+    public void setValidation(String validation) {
+        this.validation = validation;
+    }
+
 
 
 }

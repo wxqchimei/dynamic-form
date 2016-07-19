@@ -19,6 +19,8 @@ import com.iflytek.epdcloud.dynamicform.entity.DateTimeField;
 import com.iflytek.epdcloud.dynamicform.entity.Field;
 import com.iflytek.epdcloud.dynamicform.entity.FieldValue;
 import com.iflytek.epdcloud.dynamicform.entity.Form;
+import com.iflytek.epdcloud.dynamicform.entity.RadioBoxField;
+import com.iflytek.epdcloud.dynamicform.entity.SelectField;
 import com.iflytek.epdcloud.dynamicform.entity.TextAreaField;
 import com.iflytek.epdcloud.dynamicform.entity.TextField;
 import com.iflytek.epdcloud.eduarchive.common.utils.UUIDUtils;
@@ -169,9 +171,17 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
                 args.put("width", taf.getWidth());
 
                 break;
+            case "radiobox":
+                RadioBoxField rbf = (RadioBoxField) field;
+                args.put("options", rbf.getOptions());
+                break;
             case "checkbox":
                 CheckBoxField cbf = (CheckBoxField) field;
                 args.put("options", cbf.getOptions());
+                break;
+            case "select":
+                SelectField sf = (SelectField) field;
+                args.put("options", sf.getOptions());
                 break;
             default:
                 break;
@@ -291,5 +301,30 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             LOGGER.warn("结果集为空", e);
             return null;
         }
+    }
+
+    /**
+     * @Description:
+     * @param formId
+     * @param sw
+     * @return
+     */
+    public List<Field> listField(String formId, String sw) {
+        String sql =
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize FROM t_field where formId =:formId and label like '%:sw%' order by sequence asc";
+        Map<String, Object> args = new HashMap<>();
+        args.put("formId", formId);
+        args.put("sw", sw);
+        List<Field> result =
+                getNamedParameterJdbcTemplate().query(sql, args, RowMapperFactory.fieldRowMapper);
+        return result;
+    }
+    
+    public int getCodeCount(String code){
+        String sql = "select count(0) ct from t_field where `code`=:code";
+        Map<String,String> args = new HashMap<String, String>();
+        args.put("code", code);
+        int res = getNamedParameterJdbcTemplate().queryForInt(sql, args);
+        return res;
     }
 }

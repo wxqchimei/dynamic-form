@@ -20,6 +20,15 @@
 		<viewTemplate>/field-type/text/view.html</viewTemplate>
 	</fieldType>
 	<fieldType>
+		<name>单选框</name>
+		<code>radiobox</code>
+		<description>单选框</description>
+		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.RadioBoxField</fieldClassName>
+		<configTemplate>/field-type/radiobox/config.html</configTemplate>
+		<editTemplate>/field-type/radiobox/edit.html</editTemplate>
+		<viewTemplate>/field-type/radiobox/view.html</viewTemplate>
+	</fieldType>
+	<fieldType>
 		<name>复选框</name>
 		<code>checkbox</code>
 		<description>复选框</description>
@@ -27,6 +36,15 @@
 		<configTemplate>/field-type/checkbox/config.html</configTemplate>
 		<editTemplate>/field-type/checkbox/edit.html</editTemplate>
 		<viewTemplate>/field-type/checkbox/view.html</viewTemplate>
+	</fieldType>
+	<fieldType>
+		<name>下拉框</name>
+		<code>select</code>
+		<description>下拉框</description>
+		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.SelectField</fieldClassName>
+		<configTemplate>/field-type/select/config.html</configTemplate>
+		<editTemplate>/field-type/select/edit.html</editTemplate>
+		<viewTemplate>/field-type/select/view.html</viewTemplate>
 	</fieldType>
 	<fieldType>
 		<name>多行文本输入框</name>

@@ -1,12 +1,13 @@
 <form novalidate="novalidate">
     <input type="hidden" name="category" value="" />
+    <input type="hidden" name="fieldId" value="${field.id!''}" />
     <div style="padding: 10px 0;clear: both;">
         <div
             style="display: inline-block; float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right; word-wrap: break-word;">
             <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>字段名称：
         </div>
         <div style="display: inline-block;">
-            <input type="text" name="label" value="" maxlength="30"
+            <input type="text" name="label" value="${field.label!''}" maxlength="30"
                 style="font-size: 14px; width: 343px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 6px 5px;">
             <div></div>
         </div>
@@ -17,7 +18,7 @@
             <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>字段编码：
         </div>
         <div style="display: inline-block;">
-            <input type="text" name="code" value="" maxlength="30"
+            <input type="text" name="code" value="${field.code!''}" maxlength="30"
                 style="font-size: 14px; width: 343px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 6px 5px;">
             <div></div>
         </div>
@@ -29,16 +30,25 @@
     <div style="margin-left: 120px; line-height: 33px; font-size: 14px;">
         <div style="margin: 0; padding: 0;line-height: 33px;
     font-size: 14px;">
-            <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="required" value="1" style="font-size: 100%;"/>
-                <em></em> 
-                是
+    	<#if (field.required)??&&field.required>
+    		<label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
+                <input id="evalSel0" type="radio" name="required" checked="checked" value="1" style="font-size: 100%;"/>
+                <em></em> 是
             </label>
            <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
                 <input id="evalSel0" type="radio" name="required" value="0" />
-                <em></em> 
-                否
+                <em></em>  否
             </label>
+    	<#else>
+    		<label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
+                <input id="evalSel0" type="radio" name="required" value="1" style="font-size: 100%;"/>
+                <em></em> 是
+            </label>
+           <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
+                <input id="evalSel0" type="radio" name="required" checked="checked" value="0" />
+                <em></em>否
+            </label>
+    	</#if>
         </div>
         <div style="color: red;height: 15px;display: block;"></div>
     </div>
@@ -49,16 +59,25 @@
     <div style="margin-left: 120px; line-height: 33px; font-size: 14px;">
         <div style="margin: 0; padding: 0;line-height: 33px;
     font-size: 14px;">
-            <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="columns" value="2" style="font-size: 100%;"/>
-                <em></em> 
-                是
+    <#if (field.columns)??&&field.columns == 2>
+    	 <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
+                <input id="evalSel0" type="radio" name="columns" checked="checked" value="2" style="font-size: 100%;"/>
+                <em></em>   是
             </label>
            <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
                 <input id="evalSel0" type="radio" name="columns" value="1" />
-                <em></em> 
-                否
+                <em></em>  否
             </label>
+    <#else>
+    	 <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
+                <input id="evalSel0" type="radio" name="columns" value="2" style="font-size: 100%;"/>
+                <em></em> 是
+            </label>
+           <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
+                <input id="evalSel0" type="radio" name="columns" checked="checked" value="1" />
+                <em></em>  否
+            </label>
+    </#if>
         </div>
         <div style="color: red;height: 15px;display: block;"></div>
     </div>
@@ -71,7 +90,7 @@
             <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>默认值：
         </div>
         <div style="display: inline-block;">
-            <input type="text" name="defaultValue" value="" maxlength="30"
+            <input type="text" name="defaultValue" value="${field.defaultValue!''}" maxlength="30"
                 style="font-size: 14px; width: 343px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 6px 5px;">
             <div></div>
         </div>
@@ -95,16 +114,20 @@
             <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>最大长度：
         </div>
         <div style="display: inline-block;">
-            <input type="text" name="maxSize" value="" maxlength="30"
+            <input type="text" name="maxSize" value="${field.maxSize!''}" maxlength="30"
                 style="font-size: 14px; width: 343px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 6px 5px;">
             <div></div>
         </div>
     </div>
     
     <div style="text-align:center">
-    	<input type="button" id="saveBtn" style="height:30px;padding:0 15px;font-size:14px;background: #009f94;text-decoration: none;color: #fff;" value="保存">
-    	<input type="button" id="backBtn" style="height:30px;padding:0 15px;font-size:14px;background: #e0e0e0;text-decoration: none;color: #fff;" value="返回">
-    </div>
+		<input type="button" id="saveBtn"
+			style="border-radius: 3px; border: 0; cursor: pointer; height: 30px; padding: 0 15px; font-size: 14px; background: #00b8ac; color: #fff;"
+			value="保存"> 
+		<input type="button" id="backBtn"
+			style="border-radius: 3px; border: 0; cursor: pointer; height: 30px; padding: 0 15px; font-size: 14px; background: #ededed; color: #666;"
+			value="返回">
+	</div>
 </form>
 <script type="text/javascript">
 $(function(){
@@ -114,11 +137,15 @@ $(function(){
 				formId:formId,
 				label:$('input[name=label]').val(),
 				code:$('input[name=code]').val(),
-				required:$('input[name=required]').val(),
-				columns:$('input[name=columns]').val(),
+				required:$('input[name=required]:checked').val(),
+				columns:$('input[name=columns]:checked').val(),
 				defaultValue:$('input[name=defaultValue]').val(),
 				maxSize:$('input[name=maxSize]').val()
 		};
+		var fieldId = $('input[name=fieldId]').val();
+		if(fieldId){
+			param.id = fieldId;
+		}
 		$.post('${basePath}/dynamicForm/saveTextField.do',param,function(res){
 			if(res.success){
 				window.location.href = '${basePath}/dynamicForm/addFormPage.do?formId='+formId;

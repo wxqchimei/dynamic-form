@@ -35,15 +35,17 @@ public class DynamicFormServer {
      * HTTP提交时的动态字段的前缀 <br>
      * injecting property
      */
-    public static String    dynamicFieldHttpParameterPrefix = "custom_";
+    public static String       dynamicFieldHttpParameterPrefix = "custom_";
+    public static final String TEMPLATE_FLAG                   = "模板";
+    public static final String TEMPLATE_ENTITY_SCOPE_FLAG      = "全局";
     // injecting property
-    private String          fieldTypeConfigLocation;
+    private String             fieldTypeConfigLocation;
     // injecting property
-    private String          templateLocation                = null;
+    private String             templateLocation                = null;
     // injecting property
-    private DataSource      dataSource                      = null;
-    private FieldTypeHolder fieldTypeHolder;
-    private DynamicFormDao  dynamicFormDao;
+    private DataSource         dataSource                      = null;
+    private FieldTypeHolder    fieldTypeHolder;
+    private DynamicFormDao     dynamicFormDao;
 
     public void init() {
         fieldTypeHolder = new FieldTypeHolder(fieldTypeConfigLocation);
@@ -81,6 +83,18 @@ public class DynamicFormServer {
      */
     public List<FieldType> all() {
         return fieldTypeHolder.getFieldTypes();
+    }
+
+    /**
+     * 验证code是否唯一，true唯一，false不唯一
+     * 
+     * @Description:
+     * @param code
+     * @return
+     */
+    public boolean checkCodeOnly(String code) {
+        int r = dynamicFormDao.getCodeCount(code);
+        return r == 0;
     }
 
     /**
@@ -273,7 +287,5 @@ public class DynamicFormServer {
     public void setTemplateLocation(String templateLocation) {
         this.templateLocation = templateLocation;
     }
-
-
 
 }
