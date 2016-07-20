@@ -319,12 +319,75 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
                 getNamedParameterJdbcTemplate().query(sql, args, RowMapperFactory.fieldRowMapper);
         return result;
     }
-    
-    public int getCodeCount(String code){
-        String sql = "select count(0) ct from t_field where `code`=:code";
-        Map<String,String> args = new HashMap<String, String>();
+
+    public int getCodeCount(String code, String formId) {
+        String sql = "select count(0) ct from t_field where code=:code and formId=:formId";
+        Map<String, String> args = new HashMap<String, String>();
         args.put("code", code);
+        args.put("formId", formId);
         int res = getNamedParameterJdbcTemplate().queryForInt(sql, args);
         return res;
+    }
+
+    /**
+     * @Description:
+     * @param field
+     * @return
+     */
+    public int updateField(Field field) {
+        StringBuilder sqlbuilder = new StringBuilder(
+                "UPDATE t_field SET label=:label,columns=:columns,required=:required,defaultValue=:defaultValue ");
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("id", field.getId());
+        args.put("label", field.getLabel());
+        args.put("columns", field.getColumns());
+        args.put("required", field.isRequired());
+        args.put("defaultValue", field.getDefaultValue());
+        switch (field.getFieldType().getCode()) {
+            case "datetime":
+                DateTimeField dtf = (DateTimeField) field;
+                args.put("dateFormat", dtf.getDateFormat());
+                sqlbuilder.append(" ,datetime=:datetime ");
+                break;
+            case "text":
+                TextField tf = (TextField) field;
+                args.put("maxSize", tf.getMaxSize());
+                sqlbuilder.append(" ,datetime=:datetime ");
+                break;
+            case "textarea":
+                TextAreaField taf = (TextAreaField) field;
+                args.put("maxSize", taf.getMaxSize());
+                args.put("height", taf.getHeight());
+                args.put("width", taf.getWidth());
+                sqlbuilder.append(" ,maxSize=:maxSize ");
+                sqlbuilder.append(" ,height=:height ");
+                sqlbuilder.append(" ,width=:width ");
+
+                break;
+            case "radiobox":
+                RadioBoxField rbf = (RadioBoxField) field;
+                args.put("options", rbf.getOptions());
+                sqlbuilder.append(" ,options=:options ");
+                break;
+            case "checkbox":
+                CheckBoxField cbf = (CheckBoxField) field;
+                args.put("options", cbf.getOptions());
+                sqlbuilder.append(" ,options=:options ");
+                break;
+            case "select":
+                SelectField sf = (SelectField) field;
+                args.put("options", sf.getOptions());
+                sqlbuilder.append(" ,options=:options ");
+                break;
+            default:
+                String errorMsg = "不存在字段类型:" + field.getFieldType().getCode();
+                LOGGER.error(errorMsg);
+                throw new RuntimeException(errorMsg);
+        }
+        sqlbuilder.append(" where id=:id");
+
+        int effectedRows = getNamedParameterJdbcTemplate().update(sqlbuilder.toString(), args);
+        return effectedRows;
     }
 }

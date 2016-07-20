@@ -1,16 +1,16 @@
 <div style="padding: 10px 0;clear: both;">
     <div
         style="display: inline-block; float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right;">
-        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>学校：
+        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>${field.label!''}：
     </div>
     <div style="display: inline-block; line-height: 33px; font-size: 14px;">
         <div style="position: relative; display: inline-block; zoom: 1; vertical-align: middle;">
-            <textarea name="description" rows="5" cols="80" placeholder="请填写对活动的要求及注意事项"
+            <textarea name="${field_name_prefix}${field.code}" rows="${field.height!5}" cols="${field.width!80}" placeholder="${field.defaultValue!''}"
                 maxlength="140"
                 style="display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 5px; font-size: 12px; color: #666; resize: none;"></textarea>
             <div style="color: red; height: 15px; display: block;"></div>
             <div style="position: absolute; right: 0; bottom: -35px; font-size: 12px;">
-                还可以输入<em style="font-family: Georgia; font-size: 20px; font-weight: bold;">140</em>字
+<!--                 还可以输入<em style="font-family: Georgia; font-size: 20px; font-weight: bold;">140</em>字 -->
             </div>
         </div>
     </div>

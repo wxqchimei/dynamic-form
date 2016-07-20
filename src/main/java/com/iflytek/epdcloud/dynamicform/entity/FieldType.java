@@ -24,6 +24,10 @@ public class FieldType extends Entity {
     private String            editTemplate;
     private String            viewTemplate;
 
+    public FieldType() {
+
+    }
+
     /**
      * @param name
      * @param description

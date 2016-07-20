@@ -77,7 +77,7 @@ public abstract class Field extends Entity {
     public String getConfigHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);
-        root.put("basePath", "http://localhost:8080/sz-edu-archive-web");
+        root.put("basePath", "http://localhost:8080/sz-edu-archive-web/");
         String templateName = getFieldType().getConfigTemplate();
         return FreemarkerRender.render(templateName, root);
     }

@@ -92,8 +92,8 @@ public class DynamicFormServer {
      * @param code
      * @return
      */
-    public boolean checkCodeOnly(String code) {
-        int r = dynamicFormDao.getCodeCount(code);
+    public boolean checkCodeOnly(String code, String formId) {
+        int r = dynamicFormDao.getCodeCount(code, formId);
         return r == 0;
     }
 
@@ -286,6 +286,16 @@ public class DynamicFormServer {
      */
     public void setTemplateLocation(String templateLocation) {
         this.templateLocation = templateLocation;
+    }
+
+    /**
+     * @Description:
+     * @param field
+     * @return
+     */
+    public int updateField(Field field) {
+        int effectRows = dynamicFormDao.updateField(field);
+        return effectRows;
     }
 
 }

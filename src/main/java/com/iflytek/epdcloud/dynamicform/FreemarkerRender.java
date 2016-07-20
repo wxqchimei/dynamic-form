@@ -24,7 +24,7 @@ public class FreemarkerRender {
     static void init(String templateLocation) {
         // 1.创建配置实例Cofiguration
         cfg = new Configuration();
-        cfg.setTemplateUpdateDelay(2);
+        cfg.setTemplateUpdateDelay(3600);
         cfg.setClassForTemplateLoading(FreemarkerRender.class, "/template/");
         init = true;
     }
