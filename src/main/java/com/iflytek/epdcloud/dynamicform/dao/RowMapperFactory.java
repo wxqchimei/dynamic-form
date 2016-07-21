@@ -81,6 +81,7 @@ public class RowMapperFactory {
                                                                      checkBoxField
                                                                              .setOptions(options);
                                                                      entity = checkBoxField;
+                                                                     break;
                                                                  case "radiobox":
                                                                      RadioBoxField radioBoxField =
                                                                              new RadioBoxField();
@@ -89,6 +90,7 @@ public class RowMapperFactory {
 
                                                                      radioBoxField.setOptions(ops);
                                                                      entity = radioBoxField;
+                                                                     break;
                                                                  case "select":
                                                                      SelectField sf =
                                                                              new SelectField();
@@ -116,6 +118,7 @@ public class RowMapperFactory {
                                                                      new FieldType(fieldTypeCode));
                                                              entity.setForm(new Form(
                                                                      rs.getString("formId")));
+                                                             entity.setValidation(rs.getString("validation"));
                                                              return entity;
                                                          }
 

@@ -16,7 +16,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @date 2016年7月16日
  */
 public class DynamicFormServerTest {
-    private DynamicFormServer dynamicFormServer;
+    private IDynamicFormServer dynamicFormServer;
 
     @Before
     public void before() {

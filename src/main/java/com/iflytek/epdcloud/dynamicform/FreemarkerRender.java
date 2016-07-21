@@ -7,6 +7,14 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import javax.servlet.ServletContext;
+
+import org.springframework.util.Assert;
+
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.cache.WebappTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -21,11 +29,20 @@ public class FreemarkerRender {
     private static Configuration cfg  = null;
     private static boolean       init = false;
 
-    static void init(String templateLocation) {
+    static void init(ServletContext servletContext, String templateLocation) {
+        Assert.isTrue(!init, "FreemarkerRender has been inited");
         // 1.创建配置实例Cofiguration
         cfg = new Configuration();
-        cfg.setTemplateUpdateDelay(3600);
-        cfg.setClassForTemplateLoading(FreemarkerRender.class, "/template/");
+        cfg.setTemplateUpdateDelay(2);
+        ClassTemplateLoader classTemplateLoader =
+                new ClassTemplateLoader(FreemarkerRender.class, "/template/");
+
+        WebappTemplateLoader webappTemplateLoader =
+                new WebappTemplateLoader(servletContext, "/template/");
+        TemplateLoader[] loaders = new TemplateLoader[] {webappTemplateLoader, classTemplateLoader};
+        MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
+        cfg.setTemplateLoader(mtl);
+
         init = true;
     }
 

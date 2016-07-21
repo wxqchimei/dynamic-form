@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.iflytek.epdcloud.dynamicform.DynamicFormServer;
 import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
 
@@ -74,6 +75,7 @@ public abstract class Field extends Entity {
         printWriter.print(getConfigHtmlPlain());
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public String getConfigHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);
@@ -92,6 +94,7 @@ public abstract class Field extends Entity {
         printWriter.print(getViewHtmlPlain());
     }
 
+    @JSONField(serialize = false, deserialize = false)
     public String getViewHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);
@@ -104,7 +107,7 @@ public abstract class Field extends Entity {
     public void displayEditHtml(Writer writer) throws IOException, TemplateException {
         writer.write(getEditHtmlPlain());
     }
-
+    @JSONField(serialize = false, deserialize = false)
     public String getEditHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);

@@ -136,8 +136,8 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
     public int addField(Field field) {
         field.setId(UUIDUtils.getUUID());
         String sql = "INSERT INTO t_field"
-                + "(id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize)"
-                + "VALUES(:id,:fieldTypeCode,:formId,:code,:label,:columns,:required,:defaultValue,:sequence,:height,:width,:options,:dateFormat,:maxSize);";
+                + "(id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation)"
+                + "VALUES(:id,:fieldTypeCode,:formId,:code,:label,:columns,:required,:defaultValue,:sequence,:height,:width,:options,:dateFormat,:maxSize,:validation);";
 
 
         Map<String, Object> args = new HashMap<>();
@@ -150,6 +150,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         args.put("required", field.isRequired());
         args.put("defaultValue", field.getDefaultValue());
         args.put("sequence", field.getSequence());
+        args.put("validation", field.getValidation());
         args.put("dateFormat", null);
         args.put("maxSize", null);
         args.put("height", null);
@@ -200,7 +201,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public List<Field> listField(String formId) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize FROM t_field where formId=:formId order by sequence asc";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation FROM t_field where formId=:formId order by sequence asc";
         Map<String, Object> args = new HashMap<>();
         args.put("formId", formId);
         List<Field> result =
@@ -290,7 +291,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public Field getField(String fieldId) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize FROM t_field where id=:fieldId";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation FROM t_field where id=:fieldId";
         Map<String, Object> args = new HashMap<>();
         args.put("fieldId", fieldId);
         try {
@@ -311,7 +312,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public List<Field> listField(String formId, String sw) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize FROM t_field where formId =:formId and label like '%:sw%' order by sequence asc";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation FROM t_field where formId =:formId and label like '%:sw%' order by sequence asc";
         Map<String, Object> args = new HashMap<>();
         args.put("formId", formId);
         args.put("sw", sw);
@@ -329,6 +330,79 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         return res;
     }
 
+    public List<Field> getFieldsByIds(List<String> ids) {
+        String sql =
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation FROM t_field where id in (:ids)";
+        Map<String, List<String>> args = new HashMap<String, List<String>>();
+        args.put("ids", ids);
+        List<Field> result =
+                getNamedParameterJdbcTemplate().query(sql, args, RowMapperFactory.fieldRowMapper);
+        return result;
+    }
+
+    public int addFields(List<Field> lf) {
+        for (Field f : lf) {
+            f.setId(UUIDUtils.getUUID());
+        }
+        String sql = "INSERT INTO t_field"
+                + "(id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation)"
+                + "VALUES(:id,:fieldTypeCode,:formId,:code,:label,:columns,:required,:defaultValue,:sequence,:height,:width,:options,:dateFormat,:maxSize,:validation)";
+        Map<String, Object>[] mss = new Map[lf.size()];
+        for (int i = 0; i < lf.size(); i++) {
+            Field field = lf.get(i);
+            Map<String, Object> args = new HashMap<String, Object>();
+            args.put("id", field.getId());
+            args.put("fieldTypeCode", field.getFieldType().getCode());
+            args.put("formId", field.getForm().getId());
+            args.put("code", field.getCode());
+            args.put("label", field.getLabel());
+            args.put("columns", field.getColumns());
+            args.put("required", field.isRequired());
+            args.put("defaultValue", field.getDefaultValue());
+            args.put("sequence", field.getSequence());
+            args.put("validation", field.getValidation());
+            args.put("dateFormat", null);
+            args.put("maxSize", null);
+            args.put("height", null);
+            args.put("width", null);
+            args.put("options", null);
+            switch (field.getFieldType().getCode()) {
+                case "datetime":
+                    DateTimeField dtf = (DateTimeField) field;
+                    args.put("dateFormat", dtf.getDateFormat());
+                    break;
+                case "text":
+                    TextField tf = (TextField) field;
+                    args.put("maxSize", tf.getMaxSize());
+                    break;
+                case "textarea":
+                    TextAreaField taf = (TextAreaField) field;
+                    args.put("maxSize", taf.getMaxSize());
+                    args.put("height", taf.getHeight());
+                    args.put("width", taf.getWidth());
+
+                    break;
+                case "radiobox":
+                    RadioBoxField rbf = (RadioBoxField) field;
+                    args.put("options", rbf.getOptions());
+                    break;
+                case "checkbox":
+                    CheckBoxField cbf = (CheckBoxField) field;
+                    args.put("options", cbf.getOptions());
+                    break;
+                case "select":
+                    SelectField sf = (SelectField) field;
+                    args.put("options", sf.getOptions());
+                    break;
+                default:
+                    break;
+            }
+            mss[i] = args;
+        }
+        int[] res = getNamedParameterJdbcTemplate().batchUpdate(sql, mss);
+        return res[0];
+    }
+
     /**
      * @Description:
      * @param field
@@ -336,7 +410,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public int updateField(Field field) {
         StringBuilder sqlbuilder = new StringBuilder(
-                "UPDATE t_field SET label=:label,columns=:columns,required=:required,defaultValue=:defaultValue ");
+                "UPDATE t_field SET label=:label,columns=:columns,required=:required,defaultValue=:defaultValue,sequence=:sequence");
 
         Map<String, Object> args = new HashMap<>();
         args.put("id", field.getId());
@@ -344,6 +418,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         args.put("columns", field.getColumns());
         args.put("required", field.isRequired());
         args.put("defaultValue", field.getDefaultValue());
+        args.put("sequence", field.getSequence());
         switch (field.getFieldType().getCode()) {
             case "datetime":
                 DateTimeField dtf = (DateTimeField) field;
@@ -353,7 +428,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             case "text":
                 TextField tf = (TextField) field;
                 args.put("maxSize", tf.getMaxSize());
-                sqlbuilder.append(" ,datetime=:datetime ");
+                sqlbuilder.append(" ,maxSize=:maxSize ");
                 break;
             case "textarea":
                 TextAreaField taf = (TextAreaField) field;

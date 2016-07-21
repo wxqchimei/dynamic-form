@@ -10,7 +10,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.iflytek.epdcloud.dynamicform.DynamicFormServer;
+import com.iflytek.epdcloud.dynamicform.IDynamicFormServer;
 import com.iflytek.epdcloud.dynamicform.entity.FieldType;
 
 /**
@@ -56,8 +56,8 @@ public class FieldTypeTag extends BodyTagSupport {
     public int doStartTag() throws JspException {
         WebApplicationContext context = WebApplicationContextUtils
                 .getRequiredWebApplicationContext(pageContext.getServletContext());
-        DynamicFormServer dynamicFormServer =
-                context.getBean(com.iflytek.epdcloud.dynamicform.DynamicFormServer.class);
+        IDynamicFormServer dynamicFormServer =
+                context.getBean(com.iflytek.epdcloud.dynamicform.IDynamicFormServer.class);
         FieldType fieldType = dynamicFormServer.getFieldTypeByCode(code);
         pageContext.setAttribute(var, fieldType);
         return TagSupport.EVAL_BODY_INCLUDE;

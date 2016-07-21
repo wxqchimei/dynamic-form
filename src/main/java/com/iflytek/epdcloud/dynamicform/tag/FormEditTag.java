@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.iflytek.epdcloud.dynamicform.DynamicFormServer;
+import com.iflytek.epdcloud.dynamicform.IDynamicFormServer;
 import com.iflytek.epdcloud.dynamicform.entity.Form;
 
 import freemarker.template.TemplateException;
@@ -85,8 +85,8 @@ public class FormEditTag extends TagSupport {
     private String getStaticHtml() {
         WebApplicationContext context = WebApplicationContextUtils
                 .getRequiredWebApplicationContext(pageContext.getServletContext());
-        DynamicFormServer dynamicFormServer =
-                context.getBean(com.iflytek.epdcloud.dynamicform.DynamicFormServer.class);
+        IDynamicFormServer dynamicFormServer =
+                context.getBean(com.iflytek.epdcloud.dynamicform.IDynamicFormServer.class);
         Form form = dynamicFormServer.getForm(getFormId().trim());
         StringWriter stringWriter = new StringWriter();
         try {

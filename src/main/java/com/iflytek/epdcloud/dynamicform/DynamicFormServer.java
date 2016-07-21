@@ -8,11 +8,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import org.springframework.web.context.ServletContextAware;
 
 import com.iflytek.epdcloud.dynamicform.dao.DynamicFormDao;
 import com.iflytek.epdcloud.dynamicform.entity.Field;
@@ -30,7 +33,7 @@ import com.iflytek.epdcloud.dynamicform.util.Servlets;
  * @date 2016年7月11日
  */
 @Transactional
-public class DynamicFormServer {
+public class DynamicFormServer implements ServletContextAware, IDynamicFormServer {
     /**
      * HTTP提交时的动态字段的前缀 <br>
      * injecting property
@@ -44,23 +47,28 @@ public class DynamicFormServer {
     private String             templateLocation                = null;
     // injecting property
     private DataSource         dataSource                      = null;
+    // injecting property
+    private ServletContext     servletContext;
     private FieldTypeHolder    fieldTypeHolder;
     private DynamicFormDao     dynamicFormDao;
 
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#init()
+     */
+    @Override
     public void init() {
         fieldTypeHolder = new FieldTypeHolder(fieldTypeConfigLocation);
         dynamicFormDao = new DynamicFormDao(dataSource);
         // 初始化freemarkerRender
-        FreemarkerRender.init(templateLocation);
+        FreemarkerRender.init(servletContext, templateLocation);
     }
 
-    /**
-     * 查找匹配fieldTypeCode的fieldType
-     * 
-     * @Description:
-     * @param fieldTypeCode
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getFieldTypeByCode(java.lang.String)
      */
+    @Override
     public FieldType getFieldTypeByCode(String fieldTypeCode) {
         FieldType fieldType = fieldTypeHolder.get(fieldTypeCode);
         Assert.notNull(fieldType,
@@ -69,53 +77,55 @@ public class DynamicFormServer {
 
     }
 
-    /**
-     * @param fieldTypeConfigLocation the fieldTypeConfigLocation to set
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setFieldTypeConfigLocation(java.lang.
+     * String)
      */
+    @Override
     public void setFieldTypeConfigLocation(String fieldTypeConfigLocation) {
         this.fieldTypeConfigLocation = fieldTypeConfigLocation;
     }
 
 
-    /**
-     * @Description: 列出所有的字段类型
-     * @return 所有的字段类型
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#all()
      */
+    @Override
     public List<FieldType> all() {
         return fieldTypeHolder.getFieldTypes();
     }
 
-    /**
-     * 验证code是否唯一，true唯一，false不唯一
-     * 
-     * @Description:
-     * @param code
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#checkCodeOnly(java.lang.String,
+     * java.lang.String)
      */
+    @Override
     public boolean checkCodeOnly(String code, String formId) {
         int r = dynamicFormDao.getCodeCount(code, formId);
         return r == 0;
     }
 
-    /**
-     * 添加表单定义
-     * 
-     * @Description:
-     * @param form
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#create(com.iflytek.epdcloud.dynamicform.
+     * entity.Form)
      */
+    @Override
     public int create(Form form) {
         // 添加表单表
         return dynamicFormDao.saveForm(form);
     }
 
-    /**
-     * 
-     * 
-     * @Description: 删除表单
-     * @param formId
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#delete(java.lang.String)
      */
+    @Override
     public int delete(String formId) {
         int formEffectRow = dynamicFormDao.deleteForm(formId);
         // 先删除表单表,
@@ -124,12 +134,11 @@ public class DynamicFormServer {
         return formEffectRow;
     }
 
-    /**
-     * 
-     * @Description:查询formId指定的Form定义,内含动态字段列表
-     * @param formId
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getForm(java.lang.String)
      */
+    @Override
     public Form getForm(String formId) {
         // 先查询表单表,
         // 再查询表单所属的字段表
@@ -145,12 +154,12 @@ public class DynamicFormServer {
         return form;
     }
 
-    /**
-     * @Description:根据实体名称和实体名称内的编码查找表单
-     * @param entityName
-     * @param code
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getForm(java.lang.String,
+     * java.lang.String)
      */
+    @Override
     public Form getForm(String entityName, String code) {
         // 先查询表单表,
 
@@ -168,11 +177,11 @@ public class DynamicFormServer {
         return form;
     }
 
-    /**
-     * @Description:
-     * @param fieldId
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getField(java.lang.String)
      */
+    @Override
     public Field getField(String fieldId) {
         Field entity = dynamicFormDao.getField(fieldId);
         String fieldTypeCode = entity.getFieldType().getCode();
@@ -184,48 +193,43 @@ public class DynamicFormServer {
 
 
 
-    /**
-     * 
-     * @Description:添加新的字段到此表单定义中
-     * @param field 待添加的字段
-     * @param formId 待操作表单定义的主键ID
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#appendField2Form(com.iflytek.epdcloud.
+     * dynamicform.entity.Field, java.lang.String)
      */
+    @Override
     public int appendField2Form(Field field, String formId) {
         field.setForm(new Form(formId));
         return dynamicFormDao.addField(field);
     }
 
-    /**
-     * 从表单定义中去除此字段
-     * 
-     * @Description:
-     * @param field 待去除的字段
-     * @param formId 待操作的表单定义的主键ID
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#removeField(java.lang.String)
      */
+    @Override
     public int removeField(String fieldId) {
         return dynamicFormDao.removeField(fieldId);
     }
 
-    /**
-     * 
-     * @Description:根据业务模型主键和动态表单获取所有的字段的键值
-     * @param identity
-     * @param form 须设置category值和指标ID
-     * @return 字段键值列表
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#list(java.lang.String,
+     * java.lang.String)
      */
+    @Override
     public List<FieldValue> list(String entityName, String entityId) {
         return dynamicFormDao.listFieldValue(entityName, entityId);
     }
 
-    /**
-     * 
-     * @Description: 设置动态表单字段的键值对
-     * @param identity 业务模型的ID
-     * @param form 须设置category值和指标ID
-     * @param customs 字段键值列表
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#set(java.lang.String,
+     * java.lang.String, java.util.Map, java.lang.String)
      */
+    @Override
     public void set(String entityId, String entityName, Map<String, String> customs,
             String formId) {
 
@@ -255,47 +259,129 @@ public class DynamicFormServer {
 
     }
 
-    /**
-     * 
-     * @Description:收集httpServletRequest中的符合前缀的参数
-     * @param httpRequest 待收集的httpServletRequest
-     * @return 参数key-value集合
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#collectFieldProperties(javax.servlet.http
+     * .HttpServletRequest)
      */
+    @Override
     public Map<String, String> collectFieldProperties(HttpServletRequest httpRequest) {
         return Servlets.getParameterMap(httpRequest, dynamicFieldHttpParameterPrefix, false);
     }
 
 
 
-    /**
-     * @param dynamicFieldHttpParameterPrefix the dynamicFieldHttpParameterPrefix to set
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setDynamicFieldHttpParameterPrefix(java.
+     * lang.String)
      */
+    @Override
     public void setDynamicFieldHttpParameterPrefix(String dynamicFieldHttpParameterPrefix) {
         DynamicFormServer.dynamicFieldHttpParameterPrefix = dynamicFieldHttpParameterPrefix;
     }
 
-    /**
-     * @param dataSource the dataSource to set
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setDataSource(javax.sql.DataSource)
      */
+    @Override
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    /**
-     * @param templateLocation the templateLocation to set
+    /*
+     * (non-Javadoc)
+     * @see
+     * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setTemplateLocation(java.lang.String)
      */
+    @Override
     public void setTemplateLocation(String templateLocation) {
         this.templateLocation = templateLocation;
     }
 
-    /**
-     * @Description:
-     * @param field
-     * @return
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getFieldsByIds(java.util.List)
      */
+    @Override
+    public List<Field> getFieldsByIds(List<String> ids) {
+        if (CollectionUtils.isNotEmpty(ids)) {
+            return dynamicFormDao.getFieldsByIds(ids);
+        } else {
+            return null;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#appendFields2Form(java.util.List,
+     * java.lang.String)
+     */
+    @Override
+    public int appendFields2Form(List<Field> lf, String formId) {
+        int res = 0;
+        for (Field f : lf) {
+            f.setForm(new Form(formId));
+        }
+        if (CollectionUtils.isNotEmpty(lf)) {
+            res = dynamicFormDao.addFields(lf);
+        }
+        return res;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#updateField(com.iflytek.epdcloud.
+     * dynamicform.entity.Field)
+     */
+    @Override
     public int updateField(Field field) {
         int effectRows = dynamicFormDao.updateField(field);
         return effectRows;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.springframework.web.context.ServletContextAware#setServletContext(javax.servlet.
+     * ServletContext)
+     */
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setServletContext(javax.servlet.
+     * ServletContext)
+     */
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#swapSequence(java.lang.String,
+     * java.lang.String)
+     */
+    @Override
+    public int swapSequence(String sourceFieldId, String targetFieldId) {
+        Field sourceField = dynamicFormDao.getField(sourceFieldId);
+        Field targetField = dynamicFormDao.getField(targetFieldId);
+
+        int sourceSequence = sourceField.getSequence();
+        int targetSequence = targetField.getSequence();
+
+        if (sourceSequence == targetSequence) {
+            sourceField.setSequence(targetSequence + 1);
+            return dynamicFormDao.updateField(sourceField);
+        } else {
+            sourceField.setSequence(targetSequence);
+            targetField.setSequence(sourceSequence);
+            return dynamicFormDao.updateField(targetField)
+                    + dynamicFormDao.updateField(sourceField);
+        }
+
     }
 
 }
