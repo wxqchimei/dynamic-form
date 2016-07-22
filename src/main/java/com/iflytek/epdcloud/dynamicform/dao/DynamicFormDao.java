@@ -150,7 +150,6 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         args.put("required", field.isRequired());
         args.put("defaultValue", field.getDefaultValue());
         args.put("sequence", field.getSequence());
-        args.put("validation", field.getValidation());
         args.put("dateFormat", null);
         args.put("maxSize", null);
         args.put("height", null);
@@ -164,6 +163,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             case "text":
                 TextField tf = (TextField) field;
                 args.put("maxSize", tf.getMaxSize());
+                args.put("validation", tf.getValidation());
                 break;
             case "textarea":
                 TextAreaField taf = (TextAreaField) field;
@@ -201,7 +201,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public List<Field> listField(String formId) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation FROM t_field where formId=:formId order by sequence asc";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation FROM t_field where formId=:formId order by sequence asc,columns asc";
         Map<String, Object> args = new HashMap<>();
         args.put("formId", formId);
         List<Field> result =
@@ -230,7 +230,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public List<FieldValue> listFieldValue(String entityName, String entityId) {
         String sql =
-                "SELECT id,fieldTypeCode,entityName,entityId,key,val FROM t_fieldValue where entityName=:entityName and entityId=:entityId";
+                "SELECT id,fieldTypeCode,entityName,fieldTypeCode,entityId,key,val FROM t_fieldValue where entityName=:entityName and entityId=:entityId";
         Map<String, Object> args = new HashMap<>();
         args.put("entityName", entityName);
         args.put("entityId", entityId);
@@ -272,7 +272,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             fv.setId(UUIDUtils.getUUID());
             args = new HashMap<>();
             args.put("id", fv.getId());
-            args.put("fieldTypeCode", fv.getFieldTypeCode());
+            args.put("fieldTypeCode", fv.getFieldType().getCode());
             args.put("entityName", fv.getEntityName());
             args.put("entityId", fv.getEntityId());
             args.put("key", fv.getKey());
@@ -280,7 +280,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             argsArray[idx++] = args;
         }
         String sql =
-                "INSERT INTO t_fieldValue (id,entityId,entityName,key,val) VALUES(:id,:entityId,:entityName,:key,:val)";
+                "INSERT INTO t_fieldValue (id,entityId,entityName,fieldTypeCode,key,val) VALUES(:id,:entityId,:entityName,:fieldTypeCode,:key,:val)";
         int[] effectedRows = getNamedParameterJdbcTemplate().batchUpdate(sql, argsArray);
         return effectedRows.length;
     }
@@ -360,7 +360,6 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             args.put("required", field.isRequired());
             args.put("defaultValue", field.getDefaultValue());
             args.put("sequence", field.getSequence());
-            args.put("validation", field.getValidation());
             args.put("dateFormat", null);
             args.put("maxSize", null);
             args.put("height", null);
@@ -374,6 +373,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
                 case "text":
                     TextField tf = (TextField) field;
                     args.put("maxSize", tf.getMaxSize());
+                    args.put("validation", tf.getValidation());
                     break;
                 case "textarea":
                     TextAreaField taf = (TextAreaField) field;
@@ -410,7 +410,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public int updateField(Field field) {
         StringBuilder sqlbuilder = new StringBuilder(
-                "UPDATE t_field SET label=:label,columns=:columns,required=:required,defaultValue=:defaultValue,sequence=:sequence");
+                "UPDATE t_field SET label=:label,columns=:columns,required=:required,defaultValue=:defaultValue");
 
         Map<String, Object> args = new HashMap<>();
         args.put("id", field.getId());
@@ -418,12 +418,11 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         args.put("columns", field.getColumns());
         args.put("required", field.isRequired());
         args.put("defaultValue", field.getDefaultValue());
-        args.put("sequence", field.getSequence());
         switch (field.getFieldType().getCode()) {
             case "datetime":
                 DateTimeField dtf = (DateTimeField) field;
                 args.put("dateFormat", dtf.getDateFormat());
-                sqlbuilder.append(" ,datetime=:datetime ");
+                sqlbuilder.append(" ,dateFormat=:dateFormat ");
                 break;
             case "text":
                 TextField tf = (TextField) field;
@@ -465,4 +464,40 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         int effectedRows = getNamedParameterJdbcTemplate().update(sqlbuilder.toString(), args);
         return effectedRows;
     }
+
+    /**
+     * @Description:
+     * @param formId
+     * @return
+     */
+    public int countField(String formId) {
+        String sql = "select count(0) ct from t_field where  formId=:formId";
+        Map<String, String> args = new HashMap<String, String>();
+        args.put("formId", formId);
+        int res = getNamedParameterJdbcTemplate().queryForInt(sql, args);
+        return res;
+    }
+
+    /**
+     * @Description:
+     * @param fieldIds
+     * @return
+     */
+    public int sortField(String[] fieldIds) {
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object>[] argsArray = new HashMap[fieldIds.length];
+
+        HashMap<String, Object> args = null;
+        int idx = 0;
+        for (String fieldId : fieldIds) {
+            args = new HashMap<>();
+            args.put("id", fieldId);
+            args.put("sequence", idx);
+            argsArray[idx++] = args;
+        }
+        String sql = "UPDATE t_field SET sequence=:sequence WHERE id=:id";
+        int[] effectedRows = getNamedParameterJdbcTemplate().batchUpdate(sql, argsArray);
+        return effectedRows.length;
+    }
+
 }

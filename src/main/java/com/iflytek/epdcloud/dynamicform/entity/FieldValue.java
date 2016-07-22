@@ -3,6 +3,17 @@
  */
 package com.iflytek.epdcloud.dynamicform.entity;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.iflytek.epdcloud.dynamicform.DynamicFormServer;
+import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
+
+import freemarker.template.TemplateException;
+
 /**
  * @description：字段数据实体
  * @author suenlai
@@ -17,7 +28,7 @@ public class FieldValue extends Entity {
     private String            entityId;
     private String            key;
     private String            val;
-    private String            fieldTypeCode;
+    private FieldType         fieldType;
 
 
     /**
@@ -78,18 +89,40 @@ public class FieldValue extends Entity {
         this.entityId = entityId;
     }
 
+
     /**
-     * @return the fieldTypeCode
+     * @return the fieldType
      */
-    public String getFieldTypeCode() {
-        return this.fieldTypeCode;
+    public FieldType getFieldType() {
+        return this.fieldType;
     }
 
     /**
-     * @param fieldTypeCode the fieldTypeCode to set
+     * @param fieldType the fieldType to set
      */
-    public void setFieldTypeCode(String fieldTypeCode) {
-        this.fieldTypeCode = fieldTypeCode;
+    public void setFieldType(FieldType fieldType) {
+        this.fieldType = fieldType;
+    }
+
+    /**
+     * @Description:
+     * @param printWriter
+     * @throws IOException
+     * @throws TemplateException
+     */
+    public void displayViewHtml(Writer writer) throws IOException, TemplateException {
+        writer.write(getViewHtmlPlain());
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getViewHtmlPlain() throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("fieldValue", this);
+        root.put("field_name_prefix", DynamicFormServer.DYNAMICFIELDHTTPPARAMETERPREFIX);
+        root.put("basePath", DynamicFormServer.BASE_PATH);
+
+        String templateName = this.fieldType.getViewTemplate();
+        return FreemarkerRender.render(templateName, root);
     }
 
 }

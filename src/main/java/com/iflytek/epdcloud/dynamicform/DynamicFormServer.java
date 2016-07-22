@@ -3,6 +3,7 @@
  */
 package com.iflytek.epdcloud.dynamicform;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.context.ServletContextAware;
@@ -33,24 +39,63 @@ import com.iflytek.epdcloud.dynamicform.util.Servlets;
  * @date 2016年7月11日
  */
 @Transactional
-public class DynamicFormServer implements ServletContextAware, IDynamicFormServer {
+public class DynamicFormServer
+        implements ServletContextAware, ApplicationContextAware, IDynamicFormServer {
     /**
      * HTTP提交时的动态字段的前缀 <br>
      * injecting property
      */
-    public static String       dynamicFieldHttpParameterPrefix = "custom_";
+    public static String       DYNAMICFIELDHTTPPARAMETERPREFIX = "custom_";
+    /**
+     * 模板form的code标识
+     */
     public static final String TEMPLATE_FLAG                   = "模板";
+    /**
+     * 全局form的entityName标识
+     */
     public static final String TEMPLATE_ENTITY_SCOPE_FLAG      = "全局";
+
+    public static String       BASE_PATH                       =
+            "http://localhost:8080/sz-edu-archive-web/";
     // injecting property
     private String             fieldTypeConfigLocation;
     // injecting property
     private String             templateLocation                = null;
     // injecting property
     private DataSource         dataSource                      = null;
-    // injecting property
+
+    // context
     private ServletContext     servletContext;
+    // context
+    private ApplicationContext applicationContext;
+
+    // component
     private FieldTypeHolder    fieldTypeHolder;
+
+    // data access object
     private DynamicFormDao     dynamicFormDao;
+
+    /**
+     * 
+     * @Description:加载字段类型定义文件
+     * @param resourceLocation
+     * @param defaultResourceLocation
+     * @return
+     */
+    protected List<Resource> loadResource(String resourceLocation, String defaultResourceLocation) {
+        List<Resource> resources = new ArrayList<>();
+
+        Resource defaultFieldTypeDefineResource =
+                applicationContext.getResource("classpath:fieldTypes.xml");
+        resources.add(defaultFieldTypeDefineResource);
+        if (StringUtils.isEmpty(fieldTypeConfigLocation)) {
+            Resource customsFieldTypeDefineResource =
+                    applicationContext.getResource(fieldTypeConfigLocation);
+            resources.add(customsFieldTypeDefineResource);
+        }
+        return resources;
+
+    }
 
     /*
      * (non-Javadoc)
@@ -58,9 +103,15 @@ public class DynamicFormServer implements ServletContextAware, IDynamicFormServe
      */
     @Override
     public void init() {
-        fieldTypeHolder = new FieldTypeHolder(fieldTypeConfigLocation);
+        // loading the fieldTypeDefineResource
+        List<Resource> fieldTypeResources =
+                loadResource(fieldTypeConfigLocation, "classpath:fieldTypes.xml");
+        fieldTypeHolder = new FieldTypeHolder(fieldTypeResources);
+
+        // construct the dao access object
         dynamicFormDao = new DynamicFormDao(dataSource);
         // 初始化freemarkerRender
+
         FreemarkerRender.init(servletContext, templateLocation);
     }
 
@@ -201,7 +252,9 @@ public class DynamicFormServer implements ServletContextAware, IDynamicFormServe
      */
     @Override
     public int appendField2Form(Field field, String formId) {
+        int count = dynamicFormDao.countField(formId);
         field.setForm(new Form(formId));
+        field.setSequence((byte) (count + 1));
         return dynamicFormDao.addField(field);
     }
 
@@ -220,7 +273,7 @@ public class DynamicFormServer implements ServletContextAware, IDynamicFormServe
      * java.lang.String)
      */
     @Override
-    public List<FieldValue> list(String entityName, String entityId) {
+    public List<FieldValue> getValue(String entityName, String entityId) {
         return dynamicFormDao.listFieldValue(entityName, entityId);
     }
 
@@ -230,7 +283,7 @@ public class DynamicFormServer implements ServletContextAware, IDynamicFormServe
      * java.lang.String, java.util.Map, java.lang.String)
      */
     @Override
-    public void set(String entityId, String entityName, Map<String, String> customs,
+    public void setValue(String entityId, String entityName, Map<String, String> customs,
             String formId) {
 
         Form form = getForm(formId);
@@ -245,13 +298,12 @@ public class DynamicFormServer implements ServletContextAware, IDynamicFormServe
             if (matchField == null) {
                 continue;
             }
-            String fieldTypeCode = matchField.getFieldType().getCode();
 
             fieldValue = new FieldValue();
             fieldValue.setEntityName(entityName);
             fieldValue.setEntityId(entityId);
             fieldValue.setKey(key);
-            fieldValue.setFieldTypeCode(fieldTypeCode);
+            fieldValue.setFieldType(matchField.getFieldType());
             fieldValue.setVal(val);
             parameters.add(fieldValue);
         }
@@ -267,7 +319,7 @@ public class DynamicFormServer implements ServletContextAware, IDynamicFormServe
      */
     @Override
     public Map<String, String> collectFieldProperties(HttpServletRequest httpRequest) {
-        return Servlets.getParameterMap(httpRequest, dynamicFieldHttpParameterPrefix, false);
+        return Servlets.getParameterMap(httpRequest, DYNAMICFIELDHTTPPARAMETERPREFIX, false);
     }
 
 
@@ -280,7 +332,7 @@ public class DynamicFormServer implements ServletContextAware, IDynamicFormServe
      */
     @Override
     public void setDynamicFieldHttpParameterPrefix(String dynamicFieldHttpParameterPrefix) {
-        DynamicFormServer.dynamicFieldHttpParameterPrefix = dynamicFieldHttpParameterPrefix;
+        DynamicFormServer.DYNAMICFIELDHTTPPARAMETERPREFIX = dynamicFieldHttpParameterPrefix;
     }
 
     /*
@@ -365,23 +417,31 @@ public class DynamicFormServer implements ServletContextAware, IDynamicFormServe
      * java.lang.String)
      */
     @Override
-    public int swapSequence(String sourceFieldId, String targetFieldId) {
-        Field sourceField = dynamicFormDao.getField(sourceFieldId);
-        Field targetField = dynamicFormDao.getField(targetFieldId);
+    public int sortFields(String[] fieldIds) {
+        return dynamicFormDao.sortField(fieldIds);
+    }
 
-        int sourceSequence = sourceField.getSequence();
-        int targetSequence = targetField.getSequence();
+    @Override
+    public int deleteFieldsByFormId(String id) {
+        return dynamicFormDao.clearField(id);
+    }
 
-        if (sourceSequence == targetSequence) {
-            sourceField.setSequence(targetSequence + 1);
-            return dynamicFormDao.updateField(sourceField);
-        } else {
-            sourceField.setSequence(targetSequence);
-            targetField.setSequence(sourceSequence);
-            return dynamicFormDao.updateField(targetField)
-                    + dynamicFormDao.updateField(sourceField);
-        }
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework
+     * .context.ApplicationContext)
+     */
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 
+    /**
+     * @param bASE_PATH the bASE_PATH to set
+     */
+    public static void setBasePath(String basePath) {
+        BASE_PATH = basePath;
     }
 
 }

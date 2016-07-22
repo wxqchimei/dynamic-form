@@ -61,6 +61,9 @@ public class RowMapperFactory {
                                                                              new TextField();
                                                                      textField.setMaxSize(
                                                                              rs.getInt("maxSize"));
+                                                                     textField.setValidation(
+                                                                             rs.getString(
+                                                                                     "validation"));
                                                                      entity = textField;
                                                                      break;
                                                                  case "textarea":
@@ -113,12 +116,11 @@ public class RowMapperFactory {
                                                              entity.setRequired(
                                                                      rs.getBoolean("required"));
                                                              entity.setSequence(
-                                                                     rs.getShort("sequence"));
+                                                                     rs.getByte("sequence"));
                                                              entity.setFieldType(
                                                                      new FieldType(fieldTypeCode));
                                                              entity.setForm(new Form(
                                                                      rs.getString("formId")));
-                                                             entity.setValidation(rs.getString("validation"));
                                                              return entity;
                                                          }
 
@@ -135,8 +137,9 @@ public class RowMapperFactory {
                                                                      rs.getString("entityName"));
                                                              entity.setEntityId(
                                                                      rs.getString("entityId"));
-                                                             entity.setFieldTypeCode(
-                                                                     "fieldTypeCode");
+
+                                                             entity.setFieldType(new FieldType(rs
+                                                                     .getString("fieldTypeCode")));
                                                              entity.setKey(rs.getString("key"));
                                                              entity.setVal(rs.getString("value"));
                                                              return entity;

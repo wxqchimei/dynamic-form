@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.iflytek.epdcloud.dynamicform.DynamicFormServer;
 import com.iflytek.epdcloud.dynamicform.IDynamicFormServer;
 import com.iflytek.epdcloud.dynamicform.entity.Form;
 
@@ -100,15 +101,28 @@ public class FormEditTag extends TagSupport {
     private String getAsynHtml() {
         StringBuilder content = new StringBuilder();
         content.append("<script type=\"text/javascript\">");
-        content.append("$(");
-        content.append(bindingElementId);
-        content.append(").on(\"change\",function(){$.post(\"dynamicForm/show.do\", {formId : ");
-        content.append(formId);
-        content.append("}, function(framgetHtml) {$(containerId");
+        content.append(
+                "var renderDynamicForm = function(currentFormId,container){if (currentFormId==''){return;};");
+        content.append("$.post(\"" + DynamicFormServer.BASE_PATH
+                + "back/dynamicForm/show.do\", {formId : ");
+        content.append("currentFormId");
+        content.append("}, function(framgetHtml) {$(\"");
         content.append(containerId);
-        content.append(").html(framgetHtml);}, \"html\");});");
+        content.append("\").html(framgetHtml);}, \"html\");};");
+
+
+
+        content.append("$(\"");
+        content.append(bindingElementId);
+        content.append(
+                "\").change(function(){var currentFormId = $(this).val(); renderDynamicForm(currentFormId,\""
+                        + containerId + "\"); ");
+        content.append("})");
+
         content.append("</script>");
         return content.toString();
+
+
     }
 
     /**

@@ -4,7 +4,6 @@
 package com.iflytek.epdcloud.dynamicform.entity;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -49,20 +48,6 @@ public class Form extends Entity {
         super();
         this.entityName = entityName;
         this.code = code;
-    }
-
-    /**
-     * 
-     * 
-     * @Description:预览表单的模板
-     * @return
-     * @throws TemplateException
-     * @throws IOException
-     */
-    public void displayViewHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        for (Field f : this.fields) {
-            f.displayViewHtml(printWriter);
-        }
     }
 
     /**

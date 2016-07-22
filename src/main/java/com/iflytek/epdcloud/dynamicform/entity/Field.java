@@ -50,10 +50,7 @@ public abstract class Field extends Entity {
      * 是否必须
      */
     private boolean           required;
-    /**
-     * jquery校验规则
-     */
-    private String            validation;
+
     /**
      * 默认值
      */
@@ -61,7 +58,8 @@ public abstract class Field extends Entity {
     /**
      * 顺序
      */
-    private int               sequence;
+    private byte              sequence;
+
 
 
     /**
@@ -79,39 +77,23 @@ public abstract class Field extends Entity {
     public String getConfigHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);
-        root.put("basePath", "http://localhost:8080/sz-edu-archive-web/");
+        root.put("basePath", DynamicFormServer.BASE_PATH);
         String templateName = getFieldType().getConfigTemplate();
         return FreemarkerRender.render(templateName, root);
     }
 
-    /**
-     * @Description:
-     * @param printWriter
-     * @throws IOException
-     * @throws TemplateException
-     */
-    public void displayViewHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        printWriter.print(getViewHtmlPlain());
-    }
 
-    @JSONField(serialize = false, deserialize = false)
-    public String getViewHtmlPlain() throws IOException, TemplateException {
-        Map<String, Object> root = new HashMap<String, Object>();
-        root.put("field", this);
-        root.put("field_name_prefix", DynamicFormServer.dynamicFieldHttpParameterPrefix);
-
-        String templateName = this.fieldType.getViewTemplate();
-        return FreemarkerRender.render(templateName, root);
-    }
 
     public void displayEditHtml(Writer writer) throws IOException, TemplateException {
         writer.write(getEditHtmlPlain());
     }
+
     @JSONField(serialize = false, deserialize = false)
     public String getEditHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);
-        root.put("field_name_prefix", DynamicFormServer.dynamicFieldHttpParameterPrefix);
+        root.put("basePath", DynamicFormServer.BASE_PATH);
+        root.put("field_name_prefix", DynamicFormServer.DYNAMICFIELDHTTPPARAMETERPREFIX);
 
         String templateName = this.fieldType.getEditTemplate();
         return FreemarkerRender.render(templateName, root);
@@ -230,7 +212,7 @@ public abstract class Field extends Entity {
     /**
      * @return the sequence
      */
-    public int getSequence() {
+    public byte getSequence() {
         return this.sequence;
     }
 
@@ -239,7 +221,7 @@ public abstract class Field extends Entity {
     /**
      * @param sequence the sequence to set
      */
-    public void setSequence(int sequence) {
+    public void setSequence(byte sequence) {
         this.sequence = sequence;
     }
 
@@ -255,20 +237,6 @@ public abstract class Field extends Entity {
      */
     public void setForm(Form form) {
         this.form = form;
-    }
-
-    /**
-     * @return the validation
-     */
-    public String getValidation() {
-        return this.validation;
-    }
-
-    /**
-     * @param validation the validation to set
-     */
-    public void setValidation(String validation) {
-        this.validation = validation;
     }
 
 

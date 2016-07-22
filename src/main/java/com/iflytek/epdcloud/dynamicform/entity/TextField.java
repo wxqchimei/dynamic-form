@@ -14,7 +14,11 @@ public class TextField extends Field {
      * 
      */
     private static final long serialVersionUID = 9129633277768057353L;
-    private int               maxSize;
+    private int               maxSize          = 20;
+    /**
+     * jquery校验规则
+     */
+    private String            validation;
 
     /**
      * @return the maxSize
@@ -28,6 +32,20 @@ public class TextField extends Field {
      */
     public void setMaxSize(int maxSize) {
         this.maxSize = maxSize;
+    }
+
+    /**
+     * @return the validation
+     */
+    public String getValidation() {
+        return this.validation;
+    }
+
+    /**
+     * @param validation the validation to set
+     */
+    public void setValidation(String validation) {
+        this.validation = validation;
     }
 
 

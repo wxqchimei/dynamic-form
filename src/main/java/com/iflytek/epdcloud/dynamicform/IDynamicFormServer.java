@@ -121,7 +121,7 @@ public interface IDynamicFormServer {
      * @param form 须设置category值和指标ID
      * @return 字段键值列表
      */
-    List<FieldValue> list(String entityName, String entityId);
+    List<FieldValue> getValue(String entityName, String entityId);
 
     /**
      * 
@@ -130,7 +130,7 @@ public interface IDynamicFormServer {
      * @param form 须设置category值和指标ID
      * @param customs 字段键值列表
      */
-    void set(String entityId, String entityName, Map<String, String> customs, String formId);
+    void setValue(String entityId, String entityName, Map<String, String> customs, String formId);
 
     /**
      * 
@@ -168,9 +168,18 @@ public interface IDynamicFormServer {
 
     /**
      * @Description:
-     * @param sourceFieldId
-     * @param targetFieldId
+     * @param fieldIds
+     * @return
      */
-    int swapSequence(String sourceFieldId, String targetFieldId);
+    int sortFields(String[] fieldIds);
+
+    /**
+     * 删除表单对应的fields
+     * 
+     * @Description:
+     * @param id
+     * @return
+     */
+    int deleteFieldsByFormId(String id);
 
 }

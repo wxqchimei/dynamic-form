@@ -38,10 +38,11 @@ public class FreemarkerRender {
                 new ClassTemplateLoader(FreemarkerRender.class, "/template/");
 
         WebappTemplateLoader webappTemplateLoader =
-                new WebappTemplateLoader(servletContext, "/template/");
+                new WebappTemplateLoader(servletContext, templateLocation);
         TemplateLoader[] loaders = new TemplateLoader[] {webappTemplateLoader, classTemplateLoader};
         MultiTemplateLoader mtl = new MultiTemplateLoader(loaders);
         cfg.setTemplateLoader(mtl);
+        cfg.setDefaultEncoding("utf-8");
 
         init = true;
     }
