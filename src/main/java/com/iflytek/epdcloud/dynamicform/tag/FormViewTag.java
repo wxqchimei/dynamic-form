@@ -14,8 +14,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 import com.iflytek.epdcloud.dynamicform.entity.FieldValue;
 
-import freemarker.template.TemplateException;
-
 /**
  * @description：显示表单编辑界面的TAG
  * 
@@ -64,8 +62,8 @@ public class FormViewTag extends TagSupport {
             for (FieldValue fieldValue : fieldValues) {
                 fieldValue.displayViewHtml(stringWriter);
             }
-        } catch (IOException | TemplateException e) {
-            throw new JspException("模板显示和读取异常", e);
+        } catch (IOException e) {
+            throw new JspException("读取显示模板异常", e);
         }
 
         try {

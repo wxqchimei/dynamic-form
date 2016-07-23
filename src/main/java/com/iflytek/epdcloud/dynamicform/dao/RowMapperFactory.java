@@ -137,9 +137,8 @@ public class RowMapperFactory {
                                                                      rs.getString("entityName"));
                                                              entity.setEntityId(
                                                                      rs.getString("entityId"));
-
-                                                             entity.setFieldType(new FieldType(rs
-                                                                     .getString("fieldTypeCode")));
+                                                             entity.setField(new Field(
+                                                                     rs.getString("fieldId")));
                                                              entity.setKey(rs.getString("key"));
                                                              entity.setVal(rs.getString("value"));
                                                              return entity;

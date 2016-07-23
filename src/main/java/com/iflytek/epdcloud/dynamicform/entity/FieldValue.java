@@ -8,6 +8,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.alibaba.fastjson.annotation.JSONField;
 import com.iflytek.epdcloud.dynamicform.DynamicFormServer;
 import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
@@ -28,7 +30,7 @@ public class FieldValue extends Entity {
     private String            entityId;
     private String            key;
     private String            val;
-    private FieldType         fieldType;
+    private Field             field;
 
 
     /**
@@ -51,6 +53,9 @@ public class FieldValue extends Entity {
      * @return the val
      */
     public String getVal() {
+        if (StringUtils.isEmpty(this.val)) {
+            return getField().getDefaultValue();
+        }
         return this.val;
     }
 
@@ -90,18 +95,19 @@ public class FieldValue extends Entity {
     }
 
 
+
     /**
-     * @return the fieldType
+     * @return the field
      */
-    public FieldType getFieldType() {
-        return this.fieldType;
+    public Field getField() {
+        return this.field;
     }
 
     /**
-     * @param fieldType the fieldType to set
+     * @param field the field to set
      */
-    public void setFieldType(FieldType fieldType) {
-        this.fieldType = fieldType;
+    public void setField(Field field) {
+        this.field = field;
     }
 
     /**
@@ -110,18 +116,19 @@ public class FieldValue extends Entity {
      * @throws IOException
      * @throws TemplateException
      */
-    public void displayViewHtml(Writer writer) throws IOException, TemplateException {
+    public void displayViewHtml(Writer writer) throws IOException {
         writer.write(getViewHtmlPlain());
     }
 
     @JSONField(serialize = false, deserialize = false)
-    public String getViewHtmlPlain() throws IOException, TemplateException {
+    public String getViewHtmlPlain() {
         Map<String, Object> root = new HashMap<String, Object>();
+        root.put("field", getField());
         root.put("fieldValue", this);
         root.put("field_name_prefix", DynamicFormServer.DYNAMICFIELDHTTPPARAMETERPREFIX);
         root.put("basePath", DynamicFormServer.BASE_PATH);
 
-        String templateName = this.fieldType.getViewTemplate();
+        String templateName = this.getField().getFieldType().getViewTemplate();
         return FreemarkerRender.render(templateName, root);
     }
 

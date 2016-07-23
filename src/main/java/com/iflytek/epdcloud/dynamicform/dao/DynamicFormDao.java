@@ -230,7 +230,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public List<FieldValue> listFieldValue(String entityName, String entityId) {
         String sql =
-                "SELECT id,fieldTypeCode,entityName,fieldTypeCode,entityId,key,val FROM t_fieldValue where entityName=:entityName and entityId=:entityId";
+                "SELECT id,fieldTypeCode,entityName,fieldId,entityId,key,val FROM t_fieldValue where entityName=:entityName and entityId=:entityId";
         Map<String, Object> args = new HashMap<>();
         args.put("entityName", entityName);
         args.put("entityId", entityId);
@@ -272,9 +272,10 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             fv.setId(UUIDUtils.getUUID());
             args = new HashMap<>();
             args.put("id", fv.getId());
-            args.put("fieldTypeCode", fv.getFieldType().getCode());
+            args.put("fieldId", fv.getField().getId());
             args.put("entityName", fv.getEntityName());
             args.put("entityId", fv.getEntityId());
+            args.put("fieldId", fv.getField().getId());
             args.put("key", fv.getKey());
             args.put("val", fv.getVal());
             argsArray[idx++] = args;
@@ -330,11 +331,11 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         return res;
     }
 
-    public List<Field> getFieldsByIds(List<String> ids) {
+    public List<Field> getFieldsByIds(List<String> fieldIds) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation FROM t_field where id in (:ids)";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation FROM t_field where id in (:fieldIds)";
         Map<String, List<String>> args = new HashMap<String, List<String>>();
-        args.put("ids", ids);
+        args.put("fieldIds", fieldIds);
         List<Field> result =
                 getNamedParameterJdbcTemplate().query(sql, args, RowMapperFactory.fieldRowMapper);
         return result;

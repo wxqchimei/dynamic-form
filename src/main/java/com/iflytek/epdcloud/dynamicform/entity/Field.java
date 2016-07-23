@@ -21,7 +21,7 @@ import freemarker.template.TemplateException;
  * @author suenlai
  * @date 2016年7月11日
  */
-public abstract class Field extends Entity {
+public class Field extends Entity {
     /**
      * 
      */
@@ -61,6 +61,13 @@ public abstract class Field extends Entity {
     private byte              sequence;
 
 
+    public Field() {
+
+    }
+
+    public Field(String id) {
+        setId(id);
+    }
 
     /**
      * 

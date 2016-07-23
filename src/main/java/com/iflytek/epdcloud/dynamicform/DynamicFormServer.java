@@ -274,7 +274,12 @@ public class DynamicFormServer
      */
     @Override
     public List<FieldValue> getValue(String entityName, String entityId) {
-        return dynamicFormDao.listFieldValue(entityName, entityId);
+        List<FieldValue> fieldValues = dynamicFormDao.listFieldValue(entityName, entityId);
+        for (FieldValue fv : fieldValues) {
+            String fieldId = fv.getField().getId();
+            fv.setField(dynamicFormDao.getField(fieldId));
+        }
+        return fieldValues;
     }
 
     /*
@@ -303,7 +308,7 @@ public class DynamicFormServer
             fieldValue.setEntityName(entityName);
             fieldValue.setEntityId(entityId);
             fieldValue.setKey(key);
-            fieldValue.setFieldType(matchField.getFieldType());
+            fieldValue.setField(matchField);
             fieldValue.setVal(val);
             parameters.add(fieldValue);
         }
