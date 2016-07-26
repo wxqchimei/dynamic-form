@@ -17,7 +17,7 @@ public class TextAreaField extends TextField {
     /**
      * 宽度
      */
-    private short             width = 80;
+    private short             width = 60;
     /**
      * 高度
      */

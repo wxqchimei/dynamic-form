@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
+import com.iflytek.epdcloud.dynamicform.entity.AttachmentField;
 import com.iflytek.epdcloud.dynamicform.entity.CheckBoxField;
 import com.iflytek.epdcloud.dynamicform.entity.DateTimeField;
 import com.iflytek.epdcloud.dynamicform.entity.Field;
@@ -73,6 +74,9 @@ public class RowMapperFactory {
                                                                              rs.getShort("height"));
                                                                      textAreaField.setWidth(
                                                                              rs.getShort("width"));
+                                                                     textAreaField.setValidation(
+                                                                             rs.getString(
+                                                                                     "validation"));
                                                                      entity = textAreaField;
                                                                      break;
                                                                  case "checkbox":
@@ -101,6 +105,14 @@ public class RowMapperFactory {
                                                                              .getString("options");
                                                                      sf.setOptions(sop);
                                                                      entity = sf;
+                                                                     break;
+                                                                 case "attachment":
+                                                                     AttachmentField af =
+                                                                             new AttachmentField();
+                                                                     int fileNum = rs
+                                                                             .getInt("fileNum");
+                                                                     af.setFileNum(fileNum);
+                                                                     entity = af;
                                                                      break;
                                                                  default:
                                                                      throw new RuntimeException(
@@ -140,7 +152,7 @@ public class RowMapperFactory {
                                                              entity.setField(new Field(
                                                                      rs.getString("fieldId")));
                                                              entity.setKey(rs.getString("key"));
-                                                             entity.setVal(rs.getString("value"));
+                                                             entity.setVal(rs.getString("val"));
                                                              return entity;
                                                          }
 

@@ -45,10 +45,10 @@
 	</tag>
 
 	<tag>
-		<name>FormEditTag</name>
-		<tag-class>com.iflytek.epdcloud.dynamicform.tag.FormEditTag</tag-class>
+		<name>FormAddTag</name>
+		<tag-class>com.iflytek.epdcloud.dynamicform.tag.FormAddTag</tag-class>
 		<body-content>JSP</body-content>
-		<description>show dynamic form edit-view
+		<description>show dynamic form add-template
 		</description>
 		<attribute>
 			<name>formId</name>
@@ -79,6 +79,19 @@
 		<tag-class>com.iflytek.epdcloud.dynamicform.tag.FormViewTag</tag-class>
 		<body-content>JSP</body-content>
 		<description>show dynamic form view html
+		</description>
+		<attribute>
+			<name>fieldValues</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<name>FormEditTag</name>
+		<tag-class>com.iflytek.epdcloud.dynamicform.tag.FormEditTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>show dynamic form edit html
 		</description>
 		<attribute>
 			<name>fieldValues</name>

@@ -111,7 +111,7 @@ public class FieldValue extends Entity {
     }
 
     /**
-     * @Description:
+     * @Description:显示字段值模板(不能编辑)
      * @param printWriter
      * @throws IOException
      * @throws TemplateException
@@ -129,6 +129,28 @@ public class FieldValue extends Entity {
         root.put("basePath", DynamicFormServer.BASE_PATH);
 
         String templateName = this.getField().getFieldType().getViewTemplate();
+        return FreemarkerRender.render(templateName, root);
+    }
+
+    /**
+     * @Description:显示字段值模板,可编辑
+     * @param printWriter
+     * @throws IOException
+     * @throws TemplateException
+     */
+    public void displayEditHtml(Writer writer) throws IOException {
+        writer.write(getEditHtmlPlain());
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getEditHtmlPlain() {
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("field", getField());
+        root.put("fieldValue", this);
+        root.put("field_name_prefix", DynamicFormServer.DYNAMICFIELDHTTPPARAMETERPREFIX);
+        root.put("basePath", DynamicFormServer.BASE_PATH);
+
+        String templateName = this.getField().getFieldType().getEditTemplate();
         return FreemarkerRender.render(templateName, root);
     }
 

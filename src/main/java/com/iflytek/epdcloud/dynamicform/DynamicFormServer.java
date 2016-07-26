@@ -99,6 +99,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#init()
      */
     @Override
@@ -117,6 +118,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getFieldTypeByCode(java.lang.String)
      */
     @Override
@@ -130,6 +132,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setFieldTypeConfigLocation(java.lang.
      * String)
@@ -142,6 +145,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#all()
      */
     @Override
@@ -151,6 +155,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#checkCodeOnly(java.lang.String,
      * java.lang.String)
      */
@@ -162,6 +167,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#create(com.iflytek.epdcloud.dynamicform.
      * entity.Form)
@@ -174,6 +180,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#delete(java.lang.String)
      */
     @Override
@@ -187,6 +194,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getForm(java.lang.String)
      */
     @Override
@@ -207,6 +215,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getForm(java.lang.String,
      * java.lang.String)
      */
@@ -230,6 +239,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getField(java.lang.String)
      */
     @Override
@@ -246,6 +256,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#appendField2Form(com.iflytek.epdcloud.
      * dynamicform.entity.Field, java.lang.String)
@@ -260,6 +271,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#removeField(java.lang.String)
      */
     @Override
@@ -269,6 +281,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#list(java.lang.String,
      * java.lang.String)
      */
@@ -277,13 +290,14 @@ public class DynamicFormServer
         List<FieldValue> fieldValues = dynamicFormDao.listFieldValue(entityName, entityId);
         for (FieldValue fv : fieldValues) {
             String fieldId = fv.getField().getId();
-            fv.setField(dynamicFormDao.getField(fieldId));
+            fv.setField(getField(fieldId));
         }
         return fieldValues;
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#set(java.lang.String,
      * java.lang.String, java.util.Map, java.lang.String)
      */
@@ -297,7 +311,7 @@ public class DynamicFormServer
         List<FieldValue> parameters = new LinkedList<>();
         FieldValue fieldValue = null;
         while (keysIterator.hasNext()) {
-            String key = keysIterator.next();
+            String key = keysIterator.next().replace(DYNAMICFIELDHTTPPARAMETERPREFIX, "");
             String val = customs.get(key);
             Field matchField = form.findFieldBy(key);
             if (matchField == null) {
@@ -312,12 +326,15 @@ public class DynamicFormServer
             fieldValue.setVal(val);
             parameters.add(fieldValue);
         }
+        // 清除字段值
+        dynamicFormDao.cleanFieldValue(entityName, entityId);
         dynamicFormDao.addFieldValue(parameters);
 
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#collectFieldProperties(javax.servlet.http
      * .HttpServletRequest)
@@ -331,6 +348,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setDynamicFieldHttpParameterPrefix(java.
      * lang.String)
@@ -342,6 +360,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setDataSource(javax.sql.DataSource)
      */
     @Override
@@ -351,6 +370,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setTemplateLocation(java.lang.String)
      */
@@ -361,6 +381,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#getFieldsByIds(java.util.List)
      */
     @Override
@@ -374,6 +395,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#appendFields2Form(java.util.List,
      * java.lang.String)
      */
@@ -391,6 +413,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#updateField(com.iflytek.epdcloud.
      * dynamicform.entity.Field)
      */
@@ -402,11 +425,13 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.springframework.web.context.ServletContextAware#setServletContext(javax.servlet.
      * ServletContext)
      */
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#setServletContext(javax.servlet.
      * ServletContext)
      */
@@ -418,6 +443,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see com.iflytek.epdcloud.dynamicform.IDynamicFormServer#swapSequence(java.lang.String,
      * java.lang.String)
      */
@@ -433,6 +459,7 @@ public class DynamicFormServer
 
     /*
      * (non-Javadoc)
+     * 
      * @see
      * org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework
      * .context.ApplicationContext)
@@ -446,7 +473,20 @@ public class DynamicFormServer
      * @param bASE_PATH the bASE_PATH to set
      */
     public static void setBasePath(String basePath) {
+        if (!basePath.endsWith("/")) {
+            basePath = basePath + "/";
+        }
         BASE_PATH = basePath;
+    }
+
+    @Override
+    public int removeFieldsInForm(Field lf, String formId) {
+        int res = 0;
+        if (lf != null) {
+            lf.setForm(new Form(formId));
+            res = dynamicFormDao.removeFields(lf);
+        }
+        return res;
     }
 
 }

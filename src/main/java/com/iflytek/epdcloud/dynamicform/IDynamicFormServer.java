@@ -182,4 +182,7 @@ public interface IDynamicFormServer {
      */
     int deleteFieldsByFormId(String id);
 
+    
+    int removeFieldsInForm(Field lf, String formId);
+
 }

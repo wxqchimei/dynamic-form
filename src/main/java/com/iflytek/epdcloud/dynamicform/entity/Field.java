@@ -45,7 +45,7 @@ public class Field extends Entity {
     /**
      * 一行几列
      */
-    private byte              columns;
+    private byte              columns = 1;
     /**
      * 是否必须
      */
@@ -60,6 +60,15 @@ public class Field extends Entity {
      */
     private byte              sequence;
 
+    public String getValidation() {
+        return validation;
+    }
+
+    public void setValidation(String validation) {
+        this.validation = validation;
+    }
+
+    private String            validation;
 
     public Field() {
 
@@ -90,19 +99,25 @@ public class Field extends Entity {
     }
 
 
-
-    public void displayEditHtml(Writer writer) throws IOException, TemplateException {
-        writer.write(getEditHtmlPlain());
+    /***
+     * 
+     * @Description:显示字段所定义的输入表单项
+     * @param writer
+     * @throws IOException
+     * @throws TemplateException
+     */
+    public void displayAddHtml(Writer writer) throws IOException, TemplateException {
+        writer.write(getAddHtmlPlain());
     }
 
     @JSONField(serialize = false, deserialize = false)
-    public String getEditHtmlPlain() throws IOException, TemplateException {
+    public String getAddHtmlPlain() throws IOException, TemplateException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("field", this);
         root.put("basePath", DynamicFormServer.BASE_PATH);
         root.put("field_name_prefix", DynamicFormServer.DYNAMICFIELDHTTPPARAMETERPREFIX);
 
-        String templateName = this.fieldType.getEditTemplate();
+        String templateName = this.fieldType.getAddTemplate();
         return FreemarkerRender.render(templateName, root);
     }
 

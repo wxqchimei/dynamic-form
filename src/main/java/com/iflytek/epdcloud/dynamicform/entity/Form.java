@@ -53,14 +53,14 @@ public class Form extends Entity {
     /**
      * 
      * 
-     * @Description:编辑表单的模板
+     * @Description:表单添加的模板
      * @return
      * @throws TemplateException
      * @throws IOException
      */
-    public void displayEditHtml(Writer writer) throws IOException, TemplateException {
+    public void displayAddHtml(Writer writer) throws IOException, TemplateException {
         for (Field f : this.fields) {
-            f.displayEditHtml(writer);
+            f.displayAddHtml(writer);
         }
     }
 

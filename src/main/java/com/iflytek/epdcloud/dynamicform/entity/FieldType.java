@@ -23,6 +23,7 @@ public class FieldType extends Entity {
     private String            configTemplate;
     private String            editTemplate;
     private String            viewTemplate;
+    private String            addTemplate;
 
     public FieldType() {
 
@@ -34,7 +35,7 @@ public class FieldType extends Entity {
      * @param className
      */
     public FieldType(String name, String code, String description, String fieldClassName,
-            String configTemplate, String editTemplate, String viewTemplate) {
+            String configTemplate, String editTemplate, String viewTemplate, String addTemplate) {
         this.name = name;
         this.code = code;
         this.description = description;
@@ -42,6 +43,7 @@ public class FieldType extends Entity {
         this.configTemplate = configTemplate;
         this.editTemplate = editTemplate;
         this.viewTemplate = viewTemplate;
+        this.addTemplate = addTemplate;
     }
 
     public FieldType(String code) {
@@ -147,4 +149,19 @@ public class FieldType extends Entity {
     public void setViewTemplate(String viewTemplate) {
         this.viewTemplate = viewTemplate;
     }
+
+    /**
+     * @return the addTemplate
+     */
+    public String getAddTemplate() {
+        return this.addTemplate;
+    }
+
+    /**
+     * @param addTemplate the addTemplate to set
+     */
+    public void setAddTemplate(String addTemplate) {
+        this.addTemplate = addTemplate;
+    }
+
 }

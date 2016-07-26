@@ -57,6 +57,7 @@ class FieldTypeHolder {
             String configTemplate = null;
             String editTemplate = null;
             String viewTemplate = null;
+            String addTemplate = null;
             FieldType fieldType = null;
             while (rootIterator.hasNext()) {
                 Element element = rootIterator.next();
@@ -67,8 +68,10 @@ class FieldTypeHolder {
                 configTemplate = element.element("configTemplate").getText();
                 editTemplate = element.element("editTemplate").getText();
                 viewTemplate = element.element("viewTemplate").getText();
+                addTemplate = element.element("addTemplate").getText();
+
                 fieldType = new FieldType(name, code, description, fieldClassName, configTemplate,
-                        editTemplate, viewTemplate);
+                        editTemplate, viewTemplate, addTemplate);
                 fieldTypes.add(fieldType);
             }
         }
