@@ -15,6 +15,7 @@ import com.iflytek.epdcloud.dynamicform.entity.Field;
 import com.iflytek.epdcloud.dynamicform.entity.FieldType;
 import com.iflytek.epdcloud.dynamicform.entity.FieldValue;
 import com.iflytek.epdcloud.dynamicform.entity.Form;
+import com.iflytek.epdcloud.dynamicform.entity.InstitutionSelectorField;
 import com.iflytek.epdcloud.dynamicform.entity.RadioBoxField;
 import com.iflytek.epdcloud.dynamicform.entity.SelectField;
 import com.iflytek.epdcloud.dynamicform.entity.TextAreaField;
@@ -114,6 +115,11 @@ public class RowMapperFactory {
                                                                      af.setFileNum(fileNum);
                                                                      entity = af;
                                                                      break;
+                                                                 case "institutionSelector":
+                                                 					InstitutionSelectorField isf = 
+                                                 							new InstitutionSelectorField();
+                                                 					entity = isf;
+                                                 					break;
                                                                  default:
                                                                      throw new RuntimeException(
                                                                              "未知或未加载的字段类型");

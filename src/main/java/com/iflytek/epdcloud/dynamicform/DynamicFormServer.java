@@ -292,7 +292,7 @@ public class DynamicFormServer
             String fieldId = fv.getField().getId();
             fv.setField(getField(fieldId));
         }
-        return fieldValues;
+        return fieldValues==null?new ArrayList<FieldValue>():fieldValues;
     }
 
     /*
@@ -311,12 +311,16 @@ public class DynamicFormServer
         List<FieldValue> parameters = new LinkedList<>();
         FieldValue fieldValue = null;
         while (keysIterator.hasNext()) {
-            String key = keysIterator.next().replace(DYNAMICFIELDHTTPPARAMETERPREFIX, "");
+            String key = keysIterator.next();
             String val = customs.get(key);
-            Field matchField = form.findFieldBy(key);
-            if (matchField == null) {
-                continue;
+            boolean hasPrefix = StringUtils.startsWith(key, DYNAMICFIELDHTTPPARAMETERPREFIX);
+            if (hasPrefix) {
+                key = key.replace(DYNAMICFIELDHTTPPARAMETERPREFIX, "");
             }
+
+            Field matchField = form.findFieldBy(key);
+
+            Assert.notNull(matchField, "找不到与code[" + key + "]匹配的Field");
 
             fieldValue = new FieldValue();
             fieldValue.setEntityName(entityName);
@@ -477,16 +481,6 @@ public class DynamicFormServer
             basePath = basePath + "/";
         }
         BASE_PATH = basePath;
-    }
-
-    @Override
-    public int removeFieldsInForm(Field lf, String formId) {
-        int res = 0;
-        if (lf != null) {
-            lf.setForm(new Form(formId));
-            res = dynamicFormDao.removeFields(lf);
-        }
-        return res;
     }
 
 }

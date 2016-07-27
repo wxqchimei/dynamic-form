@@ -521,13 +521,4 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         return effectedRows.length;
     }
 
-    public int removeFields(Field lf) {
-        String sql = "DELETE FROM t_field where  code=:code AND formId=:formId";
-        Map<String, Object> args = new HashMap<>();
-        args.put("code", lf.getCode());
-        args.put("formId", lf.getForm().getId());
-        int effectedRows = getNamedParameterJdbcTemplate().update(sql, args);
-        return effectedRows;
-    }
-
 }

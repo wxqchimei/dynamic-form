@@ -21,72 +21,70 @@ import com.iflytek.epdcloud.dynamicform.entity.FieldValue;
  * @date 2016年7月15日
  */
 public class FormViewTag extends TagSupport {
-    /**
+	/**
      * 
      */
-    private static final long serialVersionUID = 7339629512069413193L;
+	private static final long serialVersionUID = 7339629512069413193L;
 
-    private List<FieldValue>  fieldValues      = null;
+	private List<FieldValue> fieldValues = null;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.jsp.tagext.BodyTagSupport#doAfterBody()
+	 */
+	@Override
+	public int doAfterBody() throws JspException {
+		return super.doAfterBody();
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+	 */
+	@Override
+	public int doEndTag() throws JspException {
+		return EVAL_PAGE;
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doAfterBody()
-     */
-    @Override
-    public int doAfterBody() throws JspException {
-        return super.doAfterBody();
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
+	 */
+	@Override
+	public int doStartTag() throws JspException {
+		StringWriter stringWriter = new StringWriter();
+		try {
+			for (FieldValue fieldValue : fieldValues) {
+				fieldValue.displayViewHtml(stringWriter);
+			}
+		} catch (IOException e) {
+			throw new JspException("读取显示模板异常", e);
+		}
 
-    /*
-     * (non-Javadoc)
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
-     */
-    @Override
-    public int doEndTag() throws JspException {
-        return EVAL_PAGE;
-    }
+		try {
+			pageContext.getOut().write(stringWriter.toString());
+		} catch (IOException e) {
+			throw new JspException(e);
+		}
+		return SKIP_BODY;
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
-     */
-    @Override
-    public int doStartTag() throws JspException {
-        if (CollectionUtils.isEmpty(fieldValues)) {
-            throw new JspException("fieldValues不能为空");
-        }
-        StringWriter stringWriter = new StringWriter();
-        try {
-            for (FieldValue fieldValue : fieldValues) {
-                fieldValue.displayViewHtml(stringWriter);
-            }
-        } catch (IOException e) {
-            throw new JspException("读取显示模板异常", e);
-        }
+	/**
+	 * @return the fieldValues
+	 */
+	public List<FieldValue> getFieldValues() {
+		return this.fieldValues;
+	}
 
-        try {
-            pageContext.getOut().write(stringWriter.toString());
-        } catch (IOException e) {
-            throw new JspException(e);
-        }
-        return SKIP_BODY;
-    }
-
-    /**
-     * @return the fieldValues
-     */
-    public List<FieldValue> getFieldValues() {
-        return this.fieldValues;
-    }
-
-    /**
-     * @param fieldValues the fieldValues to set
-     */
-    public void setFieldValues(List<FieldValue> fieldValues) {
-        this.fieldValues = fieldValues;
-    }
-
+	/**
+	 * @param fieldValues
+	 *            the fieldValues to set
+	 */
+	public void setFieldValues(List<FieldValue> fieldValues) {
+		this.fieldValues = fieldValues;
+	}
 
 }

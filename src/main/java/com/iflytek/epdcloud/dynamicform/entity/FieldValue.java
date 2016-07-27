@@ -53,9 +53,6 @@ public class FieldValue extends Entity {
      * @return the val
      */
     public String getVal() {
-        if (StringUtils.isEmpty(this.val)) {
-            return getField().getDefaultValue();
-        }
         return this.val;
     }
 

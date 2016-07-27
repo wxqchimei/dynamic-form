@@ -66,7 +66,7 @@ public class FormAddTag extends TagSupport {
      */
     @Override
     public int doStartTag() throws JspException {
-        String content = "FormEditTag输出异常";
+        String content = "FormAddTag输出异常";
 
         if (StringUtils.isEmpty(formId)) {
             asyn = true;
@@ -107,7 +107,7 @@ public class FormAddTag extends TagSupport {
         content.append(
                 "var renderDynamicForm = function(currentFormId,container,callback){if (currentFormId==''){return;};");
         content.append("$.post(\"" + DynamicFormServer.BASE_PATH
-                + "back/dynamicForm/show.do\", {formId : ");
+                + "back/dynamicForm/showAddForm.do\", {formId : ");
         content.append("currentFormId");
         content.append("}, function(framgetHtml) {$(\"");
         content.append(containerId);

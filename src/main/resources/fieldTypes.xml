@@ -61,7 +61,17 @@
 		<viewTemplate>/field-type/textarea/view.html</viewTemplate>
 		<addTemplate>/field-type/textarea/add.html</addTemplate>
 	</fieldType>
-	<fieldType>
+<!-- 	<fieldType>
+		<name>社会机构选择器</name>
+		<code>institutionSelector</code>
+		<description>社会机构选择器</description>
+		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.InstitutionSelectorField</fieldClassName>
+		<configTemplate>/field-type/institutionSelector/config.html</configTemplate>
+		<editTemplate>/field-type/institutionSelector/edit.html</editTemplate>
+		<viewTemplate>/field-type/institutionSelector/view.html</viewTemplate>
+		<addTemplate>/field-type/institutionSelector/add.html</addTemplate>
+	</fieldType> -->
+	<!-- <fieldType>
 		<name>附件上传</name>
 		<code>attachment</code>
 		<description>附件上传</description>
@@ -70,5 +80,5 @@
 		<editTemplate>/field-type/attachment/edit.html</editTemplate>
 		<viewTemplate>/field-type/attachment/view.html</viewTemplate>
 		<addTemplate>/field-type/attachment/add.html</addTemplate>
-	</fieldType>
+	</fieldType> -->
 </fieldTypes>
