@@ -13,7 +13,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.github.pagehelper.StringUtil;
 import com.iflytek.epdcloud.dynamicform.DynamicFormServer;
 import com.iflytek.epdcloud.dynamicform.entity.FieldValue;
 
@@ -98,7 +97,15 @@ public class FormEditTag extends TagSupport {
                 fieldValue.displayEditHtml(stringWriter);
             }
             stringWriter
-                    .write("<script type=\"text/javascript\">var collecteDynamicField = function(){"
+                    .write("<script type=\"text/javascript\">"
+                            +"var renderDynamicForm = function(entityName,entityId,container,callback){if (currentFormId==''){return;};"
+                            +"$.post(\"" + DynamicFormServer.BASE_PATH
+                                    + "back/dynamicForm/showEditForm.do\", {entityName : "+entityName+",entityId:"+entityId
+                            +"}, function(framgetHtml) {$(\""+containerId
+                            +"\").html(framgetHtml);if(callback){callback();}}, \"html\");};"
+
+
+                            +"var collecteDynamicField = function(){"
                             + "var customs = {};" + " $(\"[name^='"
                             + DynamicFormServer.DYNAMICFIELDHTTPPARAMETERPREFIX
                             + "']\").each(function(i,e){" + "   var name = $(this).attr(\"name\");"
@@ -114,7 +121,7 @@ public class FormEditTag extends TagSupport {
         StringBuilder content = new StringBuilder();
         content.append("<script type=\"text/javascript\">");
         content.append(
-                "var renderDynamicForm = function(entityName,entityId,container,callback){if (currentFormId==''){return;};");
+                "var renderDynamicForm = function(entityName,entityId,container,callback){");
         content.append("$.post(\"" + DynamicFormServer.BASE_PATH
                 + "back/dynamicForm/showEditForm.do\", {entityName : ");
         content.append(entityName);

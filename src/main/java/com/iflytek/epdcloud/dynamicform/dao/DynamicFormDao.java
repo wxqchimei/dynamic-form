@@ -15,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
 import com.iflytek.epdcloud.dynamicform.entity.AttachmentField;
+import com.iflytek.epdcloud.dynamicform.entity.AttachmentTextAreaField;
 import com.iflytek.epdcloud.dynamicform.entity.CheckBoxField;
 import com.iflytek.epdcloud.dynamicform.entity.DateTimeField;
 import com.iflytek.epdcloud.dynamicform.entity.Field;
@@ -24,6 +25,7 @@ import com.iflytek.epdcloud.dynamicform.entity.RadioBoxField;
 import com.iflytek.epdcloud.dynamicform.entity.SelectField;
 import com.iflytek.epdcloud.dynamicform.entity.TextAreaField;
 import com.iflytek.epdcloud.dynamicform.entity.TextField;
+import com.iflytek.epdcloud.dynamicform.entity.TimeIntervalField;
 import com.iflytek.epdcloud.eduarchive.common.utils.UUIDUtils;
 
 /**
@@ -137,8 +139,8 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
     public int addField(Field field) {
         field.setId(UUIDUtils.getUUID());
         String sql = "INSERT INTO t_field"
-                + "(id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum)"
-                + "VALUES(:id,:fieldTypeCode,:formId,:code,:label,:columns,:required,:defaultValue,:sequence,:height,:width,:options,:dateFormat,:maxSize,:validation,:fileNum);";
+                + "(id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum,unit)"
+                + "VALUES(:id,:fieldTypeCode,:formId,:code,:label,:columns,:required,:defaultValue,:sequence,:height,:width,:options,:dateFormat,:maxSize,:validation,:fileNum,:unit);";
 
 
         Map<String, Object> args = new HashMap<>();
@@ -158,22 +160,28 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         args.put("maxSize", null);
         args.put("validation", null);
         args.put("fileNum", null);
+        args.put("unit",null);
         switch (field.getFieldType().getCode()) {
             case "datetime":
                 DateTimeField dtf = (DateTimeField) field;
                 args.put("dateFormat", dtf.getDateFormat());
                 break;
+            case "timeInterval":
+                TimeIntervalField tif = (TimeIntervalField) field;
+                args.put("dateFormat", tif.getDateFormat());
+                break;
             case "text":
                 TextField tf = (TextField) field;
                 args.put("maxSize", tf.getMaxSize());
                 args.put("validation", tf.getValidation());
+                args.put("unit",tf.getUnit());
                 break;
             case "textarea":
                 TextAreaField taf = (TextAreaField) field;
                 args.put("maxSize", taf.getMaxSize());
                 args.put("height", taf.getHeight());
                 args.put("width", taf.getWidth());
-
+                args.put("validation", taf.getValidation());
                 break;
             case "radiobox":
                 RadioBoxField rbf = (RadioBoxField) field;
@@ -190,6 +198,14 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             case "attachment":
                 AttachmentField af = (AttachmentField) field;
                 args.put("fileNum", af.getFileNum());
+                break;
+            case "attachmentTextarea":
+                AttachmentTextAreaField atf = (AttachmentTextAreaField) field;
+                args.put("maxSize", atf.getMaxSize());
+                args.put("height", atf.getHeight());
+                args.put("width", atf.getWidth());
+                args.put("validation", atf.getValidation());
+                args.put("fileNum", atf.getFileNum());
                 break;
             default:
                 break;
@@ -208,7 +224,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public List<Field> listField(String formId) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum FROM t_field where formId=:formId order by sequence asc,columns asc";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum,unit FROM t_field where formId=:formId order by sequence asc,columns asc";
         Map<String, Object> args = new HashMap<>();
         args.put("formId", formId);
         List<Field> result =
@@ -298,7 +314,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public Field getField(String fieldId) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum FROM t_field where id=:fieldId";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum,unit FROM t_field where id=:fieldId";
         Map<String, Object> args = new HashMap<>();
         args.put("fieldId", fieldId);
         try {
@@ -319,7 +335,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
      */
     public List<Field> listField(String formId, String sw) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum FROM t_field where formId =:formId and label like '%:sw%' order by sequence asc";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum,unit FROM t_field where formId =:formId and label like '%:sw%' order by sequence asc";
         Map<String, Object> args = new HashMap<>();
         args.put("formId", formId);
         args.put("sw", sw);
@@ -339,7 +355,7 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
 
     public List<Field> getFieldsByIds(List<String> fieldIds) {
         String sql =
-                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum FROM t_field where id in (:fieldIds)";
+                "SELECT id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum,unit FROM t_field where id in (:fieldIds)";
         Map<String, List<String>> args = new HashMap<String, List<String>>();
         args.put("fieldIds", fieldIds);
         List<Field> result =
@@ -352,8 +368,8 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             f.setId(UUIDUtils.getUUID());
         }
         String sql = "INSERT INTO t_field"
-                + "(id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum)"
-                + "VALUES(:id,:fieldTypeCode,:formId,:code,:label,:columns,:required,:defaultValue,:sequence,:height,:width,:options,:dateFormat,:maxSize,:validation,:fileNum)";
+                + "(id,fieldTypeCode,formId,code,label,columns,required,defaultValue,sequence,height,width,options,dateFormat,maxSize,validation,fileNum,unit)"
+                + "VALUES(:id,:fieldTypeCode,:formId,:code,:label,:columns,:required,:defaultValue,:sequence,:height,:width,:options,:dateFormat,:maxSize,:validation,:fileNum,:unit)";
         Map<String, Object>[] mss = new Map[lf.size()];
         for (int i = 0; i < lf.size(); i++) {
             Field field = lf.get(i);
@@ -374,15 +390,21 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
             args.put("options", null);
             args.put("validation", null);
             args.put("fileNum", null);
+            args.put("unit",null);
             switch (field.getFieldType().getCode()) {
                 case "datetime":
                     DateTimeField dtf = (DateTimeField) field;
                     args.put("dateFormat", dtf.getDateFormat());
                     break;
+                case "timeInterval":
+                    TimeIntervalField tif = (TimeIntervalField) field;
+                    args.put("dateFormat", tif.getDateFormat());
+                    break;
                 case "text":
                     TextField tf = (TextField) field;
                     args.put("maxSize", tf.getMaxSize());
                     args.put("validation", tf.getValidation());
+                    args.put("unit",tf.getUnit());
                     break;
                 case "textarea":
                     TextAreaField taf = (TextAreaField) field;
@@ -406,6 +428,14 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
                 case "attachment":
                     AttachmentField af = (AttachmentField) field;
                     args.put("fileNum", af.getFileNum());
+                    break;
+                case "attachmentTextarea":
+                    AttachmentTextAreaField atf = (AttachmentTextAreaField) field;
+                    args.put("maxSize", atf.getMaxSize());
+                    args.put("height", atf.getHeight());
+                    args.put("width", atf.getWidth());
+                    args.put("validation", atf.getValidation());
+                    args.put("fileNum", atf.getFileNum());
                     break;
                 default:
                     break;
@@ -437,10 +467,17 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
                 args.put("dateFormat", dtf.getDateFormat());
                 sqlbuilder.append(" ,dateFormat=:dateFormat ");
                 break;
+            case "timeInterval":
+                TimeIntervalField tif = (TimeIntervalField) field;
+                args.put("dateFormat", tif.getDateFormat());
+                sqlbuilder.append(" ,dateFormat=:dateFormat ");
+                break;
             case "text":
                 TextField tf = (TextField) field;
                 args.put("maxSize", tf.getMaxSize());
                 args.put("validation", tf.getValidation());
+                args.put("unit",tf.getUnit());
+                sqlbuilder.append(" ,unit=:unit");
                 sqlbuilder.append(" ,maxSize=:maxSize ");
                 sqlbuilder.append(" ,validation=:validation");
                 break;
@@ -475,6 +512,19 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
                 args.put("fileNum", af.getFileNum());
                 sqlbuilder.append(" ,fileNum=:fileNum ");
                 break;
+            case "attachmentTextarea":
+                AttachmentTextAreaField atf = (AttachmentTextAreaField) field;
+                args.put("maxSize", atf.getMaxSize());
+                args.put("height", atf.getHeight());
+                args.put("width", atf.getWidth());
+                args.put("validation", atf.getValidation());
+                args.put("fileNum", atf.getFileNum());
+                sqlbuilder.append(" ,maxSize=:maxSize ");
+                sqlbuilder.append(" ,height=:height ");
+                sqlbuilder.append(" ,width=:width ");
+                sqlbuilder.append(" ,validation=:validation");
+                sqlbuilder.append(" ,fileNum=:fileNum ");
+                break;
             default:
                 String errorMsg = "不存在字段类型:" + field.getFieldType().getCode();
                 LOGGER.error(errorMsg);
@@ -486,6 +536,95 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         return effectedRows;
     }
 
+    /**
+     * @Description:
+     * @param field
+     * @return
+     */
+    public int updateCopiedField(Field field) {
+        StringBuilder sqlbuilder = new StringBuilder(
+                "UPDATE t_field SET label=:label,columns=:columns,defaultValue=:defaultValue");
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("id", field.getId());
+        args.put("code", field.getCode());
+        args.put("label", field.getLabel());
+        args.put("columns", field.getColumns());
+        args.put("defaultValue", field.getDefaultValue());
+        switch (field.getFieldType().getCode()) {
+            case "datetime":
+                DateTimeField dtf = (DateTimeField) field;
+                args.put("dateFormat", dtf.getDateFormat());
+                sqlbuilder.append(" ,dateFormat=:dateFormat ");
+                break;
+            case "timeInterval":
+                TimeIntervalField tif = (TimeIntervalField) field;
+                args.put("dateFormat", tif.getDateFormat());
+                sqlbuilder.append(" ,dateFormat=:dateFormat ");
+                break;  
+            case "text":
+                TextField tf = (TextField) field;
+                args.put("maxSize", tf.getMaxSize());
+                args.put("validation", tf.getValidation());
+                args.put("unit",tf.getUnit());
+                sqlbuilder.append(" ,unit=:unit");
+                sqlbuilder.append(" ,maxSize=:maxSize ");
+                sqlbuilder.append(" ,validation=:validation");
+                break;
+            case "textarea":
+                TextAreaField taf = (TextAreaField) field;
+                args.put("maxSize", taf.getMaxSize());
+                args.put("height", taf.getHeight());
+                args.put("width", taf.getWidth());
+                args.put("validation", taf.getValidation());
+                sqlbuilder.append(" ,maxSize=:maxSize ");
+                sqlbuilder.append(" ,height=:height ");
+                sqlbuilder.append(" ,width=:width ");
+                sqlbuilder.append(" ,validation=:validation");
+                break;
+            case "radiobox":
+                RadioBoxField rbf = (RadioBoxField) field;
+                args.put("options", rbf.getOptions());
+                sqlbuilder.append(" ,options=:options ");
+                break;
+            case "checkbox":
+                CheckBoxField cbf = (CheckBoxField) field;
+                args.put("options", cbf.getOptions());
+                sqlbuilder.append(" ,options=:options ");
+                break;
+            case "select":
+                SelectField sf = (SelectField) field;
+                args.put("options", sf.getOptions());
+                sqlbuilder.append(" ,options=:options ");
+                break;
+            case "attachment":
+                AttachmentField af = (AttachmentField) field;
+                args.put("fileNum", af.getFileNum());
+                sqlbuilder.append(" ,fileNum=:fileNum ");
+                break;
+            case "attachmentTextarea":
+                AttachmentTextAreaField atf = (AttachmentTextAreaField) field;
+                args.put("maxSize", atf.getMaxSize());
+                args.put("height", atf.getHeight());
+                args.put("width", atf.getWidth());
+                args.put("validation", atf.getValidation());
+                args.put("fileNum", atf.getFileNum());
+                sqlbuilder.append(" ,maxSize=:maxSize ");
+                sqlbuilder.append(" ,height=:height ");
+                sqlbuilder.append(" ,width=:width ");
+                sqlbuilder.append(" ,validation=:validation");
+                sqlbuilder.append(" ,fileNum=:fileNum ");
+                break;
+            default:
+                String errorMsg = "不存在字段类型:" + field.getFieldType().getCode();
+                LOGGER.error(errorMsg);
+                throw new RuntimeException(errorMsg);
+        }
+        sqlbuilder.append(" where id !=:id and code=:code");
+
+        int effectedRows = getNamedParameterJdbcTemplate().update(sqlbuilder.toString(), args);
+        return effectedRows;
+    }
     /**
      * @Description:
      * @param formId
@@ -519,6 +658,20 @@ public class DynamicFormDao extends NamedParameterJdbcDaoSupport {
         String sql = "UPDATE t_field SET sequence=:sequence WHERE id=:id";
         int[] effectedRows = getNamedParameterJdbcTemplate().batchUpdate(sql, argsArray);
         return effectedRows.length;
+    }
+
+    /**
+     * 
+     * @Description: 
+     * @param code
+     * @return
+     */
+    public int getFieldCountByCode(String code) {
+        String sql = "select count(0) ct from t_field where  `code`=:code";
+        Map<String, String> args = new HashMap<String, String>();
+        args.put("code", code);
+        int res = getNamedParameterJdbcTemplate().queryForInt(sql, args);
+        return res;
     }
 
 }

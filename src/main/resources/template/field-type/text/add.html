@@ -9,8 +9,8 @@
         ${field.label!''}：
     </div>
     <div data-content="content" style="display: inline-block;">
-        <input type="text" name="${field_name_prefix}${field.code}" value="${fieldValue.val!(field.defaultValue!'')}"
-            maxlength="${field.maxSize!140}" <#if field.required>required="required"</#if> data-validator="${field.validation!''}"
+        <input type="text" name="${field_name_prefix}${field.code}" value="${field.defaultValue!''}"
+            maxlength="${field.maxSize!140}" <#if field.required>required="required"</#if>  data-validator="${field.validation!''}"
             style="font-size: 14px; width: 200px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 6px 5px;">
         ${field.unit!''}
         <div name="errormsg" style="color: red;display: block;"></div>

@@ -1,0 +1,24 @@
+<#assign intervalJson=(fieldValue.val!'{}')?eval />
+<div style="padding: 10px 0;clear: both;">
+    <div
+            style="float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right;">
+        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;"><#if field.required>*</#if></em>
+        ${field.label!''}起：
+    </div>
+    <div data-content="content" style="margin-left: 120px; line-height: 33px; font-size: 14px;">
+        <input type="text" id="dynamicIntervalBegin" readonly value="${(intervalJson.dynamicIntervalBegin)!''}"
+        style="font-size: 14px; border: #999 1px solid; height: 27px; background: #fff url(http://127.0.0.1:8080/sz-edu-archive-web/static/quest/plugin/My97DatePicker/skin/datePicker.gif) no-repeat right; display: inline-block; zoom: 1; vertical-align: middle; padding: 0px 5px; color: #666;width:200px;">
+        <div name="errormsg" style="color: red;display: block;"></div>
+    </div>
+
+    <div
+            style="float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right;">
+        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;"><#if field.required>*</#if></em>
+        ${field.label!''}止：
+    </div>
+    <div data-content="content" style="margin-left: 120px; line-height: 33px; font-size: 14px;">
+        <input type="text" id="dynamicIntervalEnd" readonly value="${(intervalJson.dynamicIntervalEnd)!''}"
+        style="font-size: 14px; border: #999 1px solid; height: 27px; background: #fff url(http://127.0.0.1:8080/sz-edu-archive-web/static/quest/plugin/My97DatePicker/skin/datePicker.gif) no-repeat right; display: inline-block; zoom: 1; vertical-align: middle; padding: 0px 5px; color: #666;width:200px;">
+        <div name="errormsg" style="color: red;display: block;"></div>
+    </div>
+</div>

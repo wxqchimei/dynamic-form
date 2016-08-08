@@ -424,6 +424,7 @@ public class DynamicFormServer
     @Override
     public int updateField(Field field) {
         int effectRows = dynamicFormDao.updateField(field);
+        dynamicFormDao.updateCopiedField(field);
         return effectRows;
     }
 
@@ -481,6 +482,11 @@ public class DynamicFormServer
             basePath = basePath + "/";
         }
         BASE_PATH = basePath;
+    }
+
+    @Override
+    public int getFieldCountByCode(String code) {
+        return dynamicFormDao.getFieldCountByCode(code);
     }
 
 }

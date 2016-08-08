@@ -19,6 +19,18 @@ public class TextField extends Field {
      * jquery校验规则
      */
     private String            validation;
+    /**
+     * 单位
+     */
+    private String unit;
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
     /**
      * @return the maxSize

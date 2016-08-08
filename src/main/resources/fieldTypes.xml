@@ -71,7 +71,7 @@
 		<viewTemplate>/field-type/institutionSelector/view.html</viewTemplate>
 		<addTemplate>/field-type/institutionSelector/add.html</addTemplate>
 	</fieldType> -->
-	<!-- <fieldType>
+	<fieldType>
 		<name>附件上传</name>
 		<code>attachment</code>
 		<description>附件上传</description>
@@ -80,5 +80,25 @@
 		<editTemplate>/field-type/attachment/edit.html</editTemplate>
 		<viewTemplate>/field-type/attachment/view.html</viewTemplate>
 		<addTemplate>/field-type/attachment/add.html</addTemplate>
+	</fieldType>
+	<!-- <fieldType>
+		<name>图文控件</name>
+		<code>attachmentTextarea</code>
+		<description>图文控件</description>
+		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.AttachmentField</fieldClassName>
+		<configTemplate>/field-type/attachmentTextarea/config.html</configTemplate>
+		<editTemplate>/field-type/attachmentTextarea/edit.html</editTemplate>
+		<viewTemplate>/field-type/attachmentTextarea/view.html</viewTemplate>
+		<addTemplate>/field-type/attachmentTextarea/add.html</addTemplate>
+	</fieldType>
+	<fieldType>
+		<name>时间段选择</name>
+		<code>timeInterval</code>
+		<description>时间段选择</description>
+		<fieldClassName>com.iflytek.epdcloud.dynamicform.entity.TimeIntervalField</fieldClassName>
+		<configTemplate>/field-type/timeInterval/config.html</configTemplate>
+		<editTemplate>/field-type/timeInterval/edit.html</editTemplate>
+		<viewTemplate>/field-type/timeInterval/view.html</viewTemplate>
+		<addTemplate>/field-type/timeInterval/add.html</addTemplate>
 	</fieldType> -->
 </fieldTypes>

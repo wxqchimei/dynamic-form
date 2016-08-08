@@ -28,7 +28,8 @@ class FieldTypeHolder {
     private List<FieldType>     fieldTypes = new ArrayList<FieldType>();
 
     /**
-     * @param fieldTypeConfigLocation
+     *
+     * @param fieldTypeDefineResources
      */
     public FieldTypeHolder(List<Resource> fieldTypeDefineResources) {
         this.fieldTypeDefineResources = fieldTypeDefineResources;

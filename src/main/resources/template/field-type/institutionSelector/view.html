@@ -1,0 +1,135 @@
+<link rel="stylesheet" href="${basePath}/static/quest/plugin/layer/skin/layer.css" type="text/css">
+<script type="text/javascript" src="${basePath}/static/quest/plugin/layer/layer.js"></script>
+
+
+<#if field.columns==1>
+<div style="padding: 10px 0;clear: both;">
+<#else>
+<div style="padding: 10px 0;float: left;width: 50%;">
+</#if>
+	<div style="float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right;"">
+	        <input type="radio" id="institutionRadio" name="isAllOrLimit" value="1"> 
+	        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>${field.label!''}：
+	</div>
+	
+	<div data-content="content" style="margin-left: 120px; line-height: 33px; font-size: 14px;">
+        <div style="margin: 0; padding: 0;line-height: 33px; font-size: 14px;">
+    	<a href="javascript:;" id="choose" class="bg-border inline-block normalbtn" style="display:none">选择</a></label>
+    	<input id="dynamicTempValue" type="hidden" name="${field_name_prefix}${field.code}" value="">
+        </div>
+    </div>
+
+<!-- 弹出窗div -->
+	<div class="rangeContent" id="rangeContent" style="display:none; padding:10px;">
+	<div id="errormsg" style="color: red;display: block; height:20px;"></div>
+		<div class="tab-container" style="height: 245px;overflow: auto;border: 1px solid #eee;">
+			<div class="tab-content ztree" style="display:block" id="areaSocialInstitution"> </div>
+		</div>
+	</div>
+</div>
+<script>
+var dynamicInstitution = function() {
+	var src = window.location.href;
+	var baseUrl = src.substr(0, src.indexOf("/back"));
+
+	//点击选择社会机构前的radio时，显示选择按钮
+	$('#institutionRadio').click(function() {
+		$('#choose').show();
+		$('#limitPerson').hide();
+	});
+
+	//选择按钮点击事件
+	$('#choose').click(function() {
+		$('#rangeContent').show();
+		initInstitutionZtree();
+		var option = {
+			type: 1,
+			title:"${field.label}",
+			area: ['500px', '390px'],
+			content: $('#rangeContent'),
+			btn: ['保存', '取消'],
+			yes: function(index) {    //保存按钮点击函数
+				var dataToSave = getDataToSave();
+				if(dataToSave==null){
+					$('#errormsg').html("请至少选择1个机构！");
+				}else{//保存数据，关闭layer
+					$('#dynamicTempValue').attr("value",dataToSave);
+					layer.close(index);
+				}
+			},
+			cancel: function(index) {
+				layer.close(index);
+			}
+		};
+		var visualHeight = window.outerHeight;
+		if (visualHeight <= 768) {
+			var top = (visualHeight - 390) / 2;
+			$.extend(option, {
+				offset: top + 'px'
+			});
+		}
+		layer.open(option);
+		$('.layui-layer-content').css({'overflow': 'visible'}); //去掉外面的滚动条
+	});
+	
+	//获取待保存的数据
+	function getDataToSave(){
+		var treeObj = $.fn.zTree.getZTreeObj('areaSocialInstitution');   
+		var selNodes = treeObj.getCheckedNodes(true);
+		var saveData = [];
+		
+		for (var i = 0; i < selNodes.length; i++) {
+				var tempdata = {};
+				tempdata['id'] = selNodes[i].id;
+				tempdata['name'] = selNodes[i].name;
+				tempdata['type'] = selNodes[i].type;
+				tempdata['open'] = selNodes[i].open;
+				tempdata['isParent'] = selNodes[i].isParent;
+				tempdata['pId'] = selNodes[i].pId;
+				saveData.push(tempdata);
+		}
+		if (saveData.length > 0) {
+			//var saveJson = {};
+			//saveJson['school'] = saveData;
+			//$('#realTimeRangeJson').val(JSON.stringify(saveJson));
+			return JSON.stringify(saveData);
+		} else {
+			//$('#realTimeRangeJson').val('');
+			return null;
+		}
+	}
+	//初始化zTree
+	function initInstitutionZtree() { 		
+		var setting = {
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			check: {
+				<#if field.defaultValue=="1">    //机构只能单选
+					enable:false,
+				<#else>
+					enable:true,             //机构多选
+				</#if>
+				nocheckInherit: true,
+				chkboxType: {
+					"Y": "ps",
+					"N": "ps"
+				}
+			},
+			callback: {
+				onCheck: function() {
+				}
+			}
+		};
+		$.get(baseUrl + '/back/businessRelatedDynamicForm/getSocialInstitutionByAreaId.do', function(res) {
+			$.fn.zTree.init($('#areaSocialInstitution'), setting, res);
+		});
+	};
+};
+
+$(function() {
+	dynamicInstitution = dynamicInstitution();
+});
+</script>

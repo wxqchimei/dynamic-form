@@ -19,8 +19,8 @@
             <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>字段编码：
         </div>
         <div style="display: inline-block;">
-            <input type="text" name="code" value="${field.code!''}" maxlength="30"
-                style="font-size: 14px; width: 343px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 6px 5px;">
+            <input type="text" name="code" value="${field.code!''}" maxlength="30" <#if (field.id)??>readonly="readonly"</#if>
+                style="font-size: 14px; width: 343px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: <#if (field.id)??>#ddd<#else>#fff</#if>; padding: 6px 5px;">
             <div id="errormsg" style="color: red;display: block;"></div>
         </div>
     </div>
@@ -37,20 +37,20 @@
     font-size: 14px;">
     	<#if (field.required)??&&field.required>
     		<label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="required" checked="checked" value="1" style="font-size: 100%;"/>
+                <input type="radio" name="required" checked="checked" value="1" style="font-size: 100%;"/>
                 <em></em> 是
             </label>
            <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="required" value="0" />
+                <input type="radio" name="required" value="0" />
                 <em></em>  否
             </label>
     	<#else>
     		<label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="required" value="1" style="font-size: 100%;"/>
+                <input type="radio" name="required" value="1" style="font-size: 100%;"/>
                 <em></em> 是
             </label>
            <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="required" checked="checked" value="0" />
+                <input type="radio" name="required" checked="checked" value="0" />
                 <em></em>否
             </label>
     	</#if>
@@ -66,39 +66,26 @@
     font-size: 14px;">
     <#if (field.columns)??&&field.columns == 2>
     	 <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="columns" checked="checked" value="2" style="font-size: 100%;"/>
+                <input type="radio" name="columns" checked="checked" value="2" style="font-size: 100%;"/>
                 <em></em>   是
             </label>
            <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="columns" value="1" />
+                <input type="radio" name="columns" value="1" />
                 <em></em>  否
             </label>
     <#else>
     	 <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="columns" value="2" style="font-size: 100%;"/>
+                <input type="radio" name="columns" value="2" style="font-size: 100%;"/>
                 <em></em> 是
             </label>
            <label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-                <input id="evalSel0" type="radio" name="columns" checked="checked" value="1" />
+                <input type="radio" name="columns" checked="checked" value="1" />
                 <em></em>  否
             </label>
     </#if>
         </div>
         <div id="errormsg" style="color: red;display: block;"></div>
     </div>
-    </div>
-    
-    
-    <div style="padding: 10px 0;clear: both;">
-        <div
-            style="display: inline-block; float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right; word-wrap: break-word;">
-            <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;"></em>验证代码：
-        </div>
-        <div style="display: inline-block;">
-            <input type="text" name="validation" value="${field.validation!''}" maxlength="30"
-                style="font-size: 14px; width: 343px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 6px 5px;">
-            <div id="errormsg" style="color: red;display: block;"></div>
-        </div>
     </div>
     
      <div style="padding: 10px 0;clear: both;">
@@ -133,9 +120,14 @@ $(function(){
 	$('#configForm').validate({
 		rules: { 
 			label	: {required: true}, 
-			code	: {required: true,checkCode:"[name=code]"}, 
+			<#if (field.id)??>
+			code	: {required: true}, 
+			<#else>
+			code	: {required: true,checkCode:"[name=code]"},
+			</#if>
 			required		: {required: true}, 
-			columns		: {required: true}
+			columns		: {required: true},
+			options:{required: true}
         },
         messages:{
         	label:{
@@ -149,6 +141,9 @@ $(function(){
 			},
 			columns:{
 				required: "请选择一行两列！"// 验证未通过的消息
+			},
+			options:{
+				required: "请输入可选项！"// 验证未通过的消息
 			}
         },
         submitHandler : function() {
@@ -163,10 +158,6 @@ $(function(){
     		if(options){
     			param.options = options;
     		}
-    		var validation = $('input[name=validation]').val();
-    		if(validation){
-    			param.validation = validation;
-    		}
     		var fieldId = $('input[name=fieldId]').val();
     		var fieldTypeCode = $('input[name=fieldTypeCode]').val();
     		if(fieldId){
@@ -177,12 +168,12 @@ $(function(){
     		}
     		$.post('${basePath}/back/dynamicForm/saveSelectField.do',param,function(res){
     			if(res.success){
-    				popBox.msg('新增成功！',function(){
+    				popBox.msg('保存成功！',function(){
 	    				self.parent.location.href = '${basePath}/back/dynamicForm/listTemplateField.do';
 	    				popBox.close('editFieldView');
     				});
     			}else{
-    				popBox.msg('新增失败！');
+    				popBox.msg('保存失败！');
     			}
     		});
     		return false;
@@ -214,7 +205,7 @@ $(function(){
 		popBox.close('editFieldView');
 	});
 	
-	var initOptions = "${field.options!''}";
+	var initOptions = '${field.options!''}';
 	if(initOptions){
 		$('[name=options]').val(initOptions);
 	}

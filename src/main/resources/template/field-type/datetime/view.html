@@ -10,12 +10,7 @@
         ${field.label!''}：
     </div>
     <div data-content="content" style="margin-left: 120px; line-height: 33px; font-size: 14px;">
-        <input type="text" name="${field_name_prefix}${field.code}" <#if field.required>required="required"</#if> value="${fieldValue.val!(field.defaultValue!'')}" data-validator="${field.validation!''}"
-        <#if field.dateFormat??>
-        	onfocus="WdatePicker({dateFmt:'${field.dateFormat}',isShowClear:false,readOnly:true})"
-        <#else>
-        	onfocus="WdatePicker({isShowClear:false,readOnly:true})"
-        </#if>
+        <input disabled type="text" name="${field_name_prefix}${field.code}" value="${fieldValue.val!(field.defaultValue!'')}"
             style="font-size: 14px; border: #999 1px solid; height: 27px; background: #fff url(http://127.0.0.1:8080/sz-edu-archive-web/static/quest/plugin/My97DatePicker/skin/datePicker.gif) no-repeat right; display: inline-block; zoom: 1; vertical-align: middle; padding: 0px 5px; color: #666;width:200px;">
         <div name="errormsg" style="color: red;display: block;"></div>
     </div>

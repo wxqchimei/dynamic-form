@@ -6,20 +6,8 @@ package com.iflytek.epdcloud.dynamicform.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.iflytek.epdcloud.dynamicform.entity.*;
 import org.springframework.jdbc.core.RowMapper;
-
-import com.iflytek.epdcloud.dynamicform.entity.AttachmentField;
-import com.iflytek.epdcloud.dynamicform.entity.CheckBoxField;
-import com.iflytek.epdcloud.dynamicform.entity.DateTimeField;
-import com.iflytek.epdcloud.dynamicform.entity.Field;
-import com.iflytek.epdcloud.dynamicform.entity.FieldType;
-import com.iflytek.epdcloud.dynamicform.entity.FieldValue;
-import com.iflytek.epdcloud.dynamicform.entity.Form;
-import com.iflytek.epdcloud.dynamicform.entity.InstitutionSelectorField;
-import com.iflytek.epdcloud.dynamicform.entity.RadioBoxField;
-import com.iflytek.epdcloud.dynamicform.entity.SelectField;
-import com.iflytek.epdcloud.dynamicform.entity.TextAreaField;
-import com.iflytek.epdcloud.dynamicform.entity.TextField;
 
 /**
  * @description：
@@ -58,9 +46,18 @@ public class RowMapperFactory {
                                                                                      "dateFormat"));
                                                                      entity = dateTimeField;
                                                                      break;
+                                                                 case "timeInterval":
+                                                                     TimeIntervalField tif =
+                                                                             new TimeIntervalField();
+                                                                     tif.setDateFormat(
+                                                                             rs.getString(
+                                                                                     "dateFormat"));
+                                                                     entity = tif;
+                                                                     break;
                                                                  case "text":
                                                                      TextField textField =
                                                                              new TextField();
+                                                                     textField.setUnit(rs.getString("unit"));
                                                                      textField.setMaxSize(
                                                                              rs.getInt("maxSize"));
                                                                      textField.setValidation(
@@ -75,6 +72,8 @@ public class RowMapperFactory {
                                                                              rs.getShort("height"));
                                                                      textAreaField.setWidth(
                                                                              rs.getShort("width"));
+                                                                     textAreaField.setMaxSize(
+                                                                             rs.getInt("maxSize"));
                                                                      textAreaField.setValidation(
                                                                              rs.getString(
                                                                                      "validation"));
@@ -115,11 +114,32 @@ public class RowMapperFactory {
                                                                      af.setFileNum(fileNum);
                                                                      entity = af;
                                                                      break;
+                                                                 case "studentSelector":
+                                                                     StudentSelectorField ssf =
+                                                                             new StudentSelectorField();
+                                                                     entity = ssf;
+                                                                     break;
                                                                  case "institutionSelector":
                                                  					InstitutionSelectorField isf = 
                                                  							new InstitutionSelectorField();
                                                  					entity = isf;
                                                  					break;
+                                                                 case "attachmentTextarea":
+                                                                     AttachmentTextAreaField atf = 
+                                                                             new AttachmentTextAreaField();
+                                                                     atf.setFileNum(rs
+                                                                             .getInt("fileNum"));
+                                                                     atf.setHeight(
+                                                                             rs.getShort("height"));
+                                                                     atf.setWidth(
+                                                                             rs.getShort("width"));
+                                                                     atf.setMaxSize(
+                                                                             rs.getInt("maxSize"));
+                                                                     atf.setValidation(
+                                                                             rs.getString(
+                                                                                     "validation"));
+                                                                     entity = atf;
+                                                                     break;
                                                                  default:
                                                                      throw new RuntimeException(
                                                                              "未知或未加载的字段类型");

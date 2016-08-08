@@ -182,4 +182,6 @@ public interface IDynamicFormServer {
      */
     int deleteFieldsByFormId(String id);
 
+    int getFieldCountByCode(String code);
+
 }

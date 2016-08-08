@@ -1,0 +1,227 @@
+<link rel="stylesheet" href="${basePath}/static/quest/plugin/layer/skin/layer.css" type="text/css">
+<script type="text/javascript" src="${basePath}/static/quest/plugin/layer/layer.js"></script>
+
+
+<#if field.columns==1>
+	<div style="padding: 10px 0;clear: both;">
+		<#else>
+			<div style="padding: 10px 0;float: left;width: 50%;">
+</#if>
+<div style="float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right;"">
+<#if field.required>*</#if>${field.label!''}：
+</div>
+
+<div data-content="content" style="margin-left: 120px; line-height: 33px; font-size: 14px;">
+	<div style="margin: 0; padding: 0;line-height: 33px; font-size: 14px;">
+		<a href="javascript:;" id="dynamicStudentSelectorChoose" class="bg-border inline-block normalbtn" style="display:none">选择</a></label>
+		<input id="dynamicStudentSelectorTempValue" type="hidden" name="${field_name_prefix}${field.code}" value="">
+	</div>
+</div>
+
+<!-- 弹出窗div -->
+<div class="popbd" style="height:490px;padding: 6px 30px">
+	<div class="inputbox">
+		<div class="select-student clearfix" id="dynamicStudentSomeStudents">
+			<div class="select-student-left" style="height:230px; overflow: auto">
+				<div id="dynamicStudentmyClass" class="ztree" style="float: left"></div>
+			</div>
+			<div class="select-student-right">
+				<div class="hd" id="titleClass"></div>
+				<div class="select-right-class" style="height:194px; overflow-y: scroll">
+					<div id="dynamicStudentmyStudent" class="ztree"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="inputbox" id="dynamicStudentinputbox">
+		<div class="select-teacher select-peer-assess">
+			<div class="hd clearfix"><span>已选择学生：　　　　</span></div>
+			<div class="bd" style="height:111px;" id="dynamicStudentselectStudent">
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<script>
+	var dynamicStudentSelector = function() {
+		var studentHidden = [];
+		//对比获取school和grade的隐藏域值，如果隐藏域有值则回显隐藏域的值val1为数据库返回的，hidVal为隐藏域的
+		function compareVal(val1,hidVal){
+			for(var i=0;i<val1.length;i++){
+				var obj = val1[i];
+				if(obj.checked){
+					obj['checked'] = false;
+				}
+				for(var j=0;j<hidVal.length;j++){
+					var hidId = hidVal[j].id;
+					if(obj.id == hidId){
+						obj['checked']=true;
+					}
+				}
+			}
+			return val1;
+		}
+
+		var getClassStudentTree = function(treeId,treeNode){
+			if(treeNode.isParent){
+				$('#dynamicStudentmyStudent').empty();
+				return false;
+			}
+			$.ajax({
+				type: "post",
+				url: "${basePath}/back/recordShare/getCurrentClassStudent.do",
+				dataType: "json",
+				async:true,
+				data: {"classId":treeNode.id},
+				success: function(data){
+					if(data.flag == -1){
+						popBox.msg("该班级下没有学生 !");
+						$("#dynamicStudentmyStudent").empty();
+					}else{
+						ztree.load({
+							id: "dynamicStudentmyStudent",
+							data: data,
+							checkbox: true,
+							selectType: "right",
+							onCheck: selectCheckStudent
+						});
+					}
+				}
+			});
+
+		//勾选右侧学生
+		function selectCheckStudent(treeId, treeNode){
+
+		}
+
+		//加载本校班级树
+		var dynamicStudentmyClass;
+		function getUserClassTree(){
+			$.ajax({
+				type: "post",
+				url: "${basePath}/back/recordShare/getCurrentSchoolClass.do",
+				dataType: "json",
+				success: function(data){
+					if(data.flag == -1){
+						popBox.msg("加载数据出错 !");
+					}else{
+						dynamicStudentmyClass = ztree.load({
+							id: "dynamicStudentmyClass",
+							data: data,
+							click: getClassStudentTree
+						});
+					}
+				},
+				error: function(){
+					popBox.msg("加载数据出错 !");
+				}
+			});
+		}
+
+
+
+
+		//选择按钮点击事件
+		$('#dynamicStudentSelectorChoose').click(function() {
+			$('#dynamicStudentSelectorRangeContent').show();
+			initInstitutionZtree();
+			var option = {
+				type: 1,
+				title:"${field.label}",
+				area: ['500px', '390px'],
+				content: $('#dynamicStudentSelectorRangeContent'),
+				btn: ['保存', '取消'],
+				yes: function(index) {    //保存按钮点击函数
+					var dataToSave = getDataToSave();
+					if(dataToSave==null||dataToSave.saveData.length<1){
+						$('#errormsg').html("请至少选择1个机构！");
+					}else{//保存数据，关闭layer
+						$('#dynamicTempValue').attr("value",JSON.stringify(dataToSave.saveData));
+						$('#dynamicSocialInstitude').val(JSON.stringify(dataToSave.showData));
+						layer.close(index);
+					}
+				},
+				cancel: function(index) {
+					layer.close(index);
+				}
+			};
+			var visualHeight = window.outerHeight;
+			if (visualHeight <= 768) {
+				var top = (visualHeight - 390) / 2;
+				$.extend(option, {
+					offset: top + 'px'
+				});
+			}
+			layer.open(option);
+			$('.layui-layer-content').css({'overflow': 'visible'}); //去掉外面的滚动条
+		});
+
+		//获取待保存的数据
+		function getDataToSave(){
+			var treeObj = $.fn.zTree.getZTreeObj('areaSocialInstitution');
+			var selNodes = treeObj.getCheckedNodes(true);
+			var saveData = [];
+			var showData = [];
+			for (var i = 0; i < selNodes.length; i++) {
+				var tempdata = {};
+				tempdata['id'] = selNodes[i].id;
+				tempdata['name'] = selNodes[i].name;
+				tempdata['type'] = selNodes[i].type;
+				tempdata['open'] = selNodes[i].open;
+				tempdata['isParent'] = selNodes[i].isParent;
+				tempdata['pId'] = selNodes[i].pId;
+				saveData.push(tempdata);
+				if(!selNodes[i].isParent){
+					showData.push(selNodes[i].name);
+				}
+			}
+			if (saveData.length > 0) {
+				return {
+					saveData:saveData,
+					showData:showData
+				}
+			} else {
+				return null;
+			}
+		}
+		//初始化zTree
+		function initInstitutionZtree() {
+			var setting = {
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				check: {
+				<#if field.defaultValue=="1">    //机构只能单选
+			enable:false,
+		<#else>
+			enable:true,             //机构多选
+		</#if>
+			nocheckInherit: true,
+					chkboxType: {
+				"Y": "ps",
+						"N": "ps"
+			}
+		},
+			callback: {
+				onCheck: function() {
+				}
+			}
+		};
+			$.get(baseUrl + '/back/businessRelatedDynamicForm/getSocialInstitutionByAreaId.do', function(res) {
+				var jsonstr = $('#dynamicTempValue').val();
+				if(jsonstr){
+					var json = JSON.parse(jsonstr);
+					res = compareVal(res,json);
+				}
+				$.fn.zTree.init($('#areaSocialInstitution'), setting, res);
+
+			});
+		};
+	};
+
+	$(function() {
+		dynamicStudentSelector = dynamicStudentSelector();
+	});
+</script>

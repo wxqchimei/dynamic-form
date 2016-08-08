@@ -10,7 +10,7 @@
         ${field.label!''}：
     </div>
     <div data-content="content" style="margin-left: 120px; line-height: 33px; font-size: 14px;">
-        <input type="text" name="${field_name_prefix}${field.code}" <#if field.required>required="required"</#if> value="${fieldValue.val!(field.defaultValue!'')}" data-validator="${field.validation!''}"
+        <input type="text" name="${field_name_prefix}${field.code}" <#if field.required>required="required"</#if> value="${field.defaultValue!''}" data-validator="${field.validation!''}"
         <#if field.dateFormat??>
         	onfocus="WdatePicker({dateFmt:'${field.dateFormat}',isShowClear:false,readOnly:true})"
         <#else>

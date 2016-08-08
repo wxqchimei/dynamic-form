@@ -16,7 +16,7 @@ public class DateTimeField extends Field {
      */
     private static final long serialVersionUID = 3020321608827385602L;
     private String            dateFormat;
-
+    
     /**
      * @return the dateFormat
      */

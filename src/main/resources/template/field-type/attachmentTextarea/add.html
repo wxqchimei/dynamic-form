@@ -1,0 +1,218 @@
+<style>
+<!--
+.swfupload {
+margin-left: -76px;
+}
+.uploadify-queue {
+display: none;
+}
+.btnfilediv {
+    width: 60px;
+    height: 60px;
+    line-height: 56px;
+    position: relative;
+    float: left;
+    background: #F8F8F8;
+    text-align: center;
+}
+-->
+</style>
+<div style="padding: 10px 0;clear: both;white-space: nowrap;">
+ 	<div
+        style="display: inline-block; float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right;">
+        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;"><#if field.required>*</#if></em>${field.label!''}：
+    </div>
+    <div style="display: inline-block; line-height: 33px; font-size: 14px;">
+        <div data-content="content" style="position: relative; display: inline-block; zoom: 1; vertical-align: middle;">
+            <textarea id="dynamicTextarea" <#if field.required>required="required"</#if> cols="${field.width!20}" rows="${field.height!5}" data-validator="${field.validation!''}"
+                maxlength="${field.maxSize!140}"
+                style="display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 5px; font-size: 12px; color: #666; resize: none;">${field.defaultValue!''}</textarea>
+            <input type="hidden" id="dynamicTextareaUploadHidden" name="${field_name_prefix}${field.code}">
+            <div name="errormsg" style="color: red;display: block;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="inputbox clearfix">
+    <div class="proname"></div>
+    <div class="procontent">
+        <div data-content="content" class="uploadfile" id="dynamicTextareaFiles">
+            <div class="btnfilediv">
+                <a href="javascript:;" class="btnfile btnaddfile"> <em class="icon-add"></em>
+                <p>附件上传</p></a>
+                <input type="file" id="dynamicTextareaUpload" style="opacity: 0;height: 0px;width: 100%;">
+            </div>
+            <div name="errormsg" style="color: red;display: block;"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+var dynamicAddAttachmentTextarea = function(){
+		var markFileIds = [];
+		var fileArgs = [];
+		var fileHiddenArray = [];
+		var hiddenObj = {};
+		$('#dynamicTextarea').keyup(function(){
+			var temVal = $('#dynamicTextarea').val();
+			hiddenObj['textarea'] = temVal;
+			$('#dynamicTextareaUploadHidden').val(JSON.stringify(hiddenObj));
+		});
+		function bindMarkFileUpload() {
+			var fileTypeExts = 
+				"*.gif;*.jpg;*.jpeg;*.png;"+
+				"*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.pdf;" +
+				"*.mp3;" +
+				"*.mp4;*.move;*.flv;";
+			var url = "${basePath}/back/dynamicForm/uploadFile.do";
+			$("#dynamicTextareaUpload").uploadify({
+				height : 62,
+				buttonText : "",
+				swf : '${basePath}/static/plugs/uploadify/uploadify.swf',
+				uploader : url,
+				width : 62,
+				multi:false,
+				successTimeout: 0,
+				fileTypeDesc : "图片，音频，视频，文档",
+				fileTypeExts : fileTypeExts,
+				fileSizeLimit : '10MB',
+				'onUploadStart' : function(file) {
+					$model = popBox.loading.show();
+				},
+				'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+					if ($model) {
+						$model.hide();
+					}
+					alert('The file ' + file.name + ' could not be uploaded: ' + errorString + ',' + errorMsg + ',' + errorCode);
+				},
+				'onUploadSuccess' : function(file, data, response) {
+					if (!data) {
+						return;
+					}
+					data = $.parseJSON(data);
+					var originalFileId = data.originalFileId;
+					var extension = data.extension;
+					var fileType = data.fileType;
+					var name = data.name;
+					var timestamp = new Date().getTime();
+					var markFile = {
+						originalFileId : originalFileId,
+						conversionFileId : data.conversionFileId,
+						fileType : fileType,
+						name : name
+					};
+					markFileIds.push(timestamp+"");
+					fileArgs[timestamp] = markFile;
+					fileHiddenArray.push(markFile);
+					hiddenObj['attachments'] = fileHiddenArray;
+					$('#dynamicTextareaUploadHidden').val(JSON.stringify(hiddenObj));
+					//处理缩略图
+					var faceUrl = getShortCutUrl(markFile, extension);
+					var html = 
+						"<a href=\"javascript:;\" class=\"btnfile\" name=\"aHref\" title=\""+name+"\">" +
+							"<input type=\"hidden\" name=\"fileId\" value=\""+timestamp+"\">"+
+							"<input type=\"hidden\" name=\"originalFileId\" value=\""+originalFileId+"\">"+
+							"<img src=\""+faceUrl+"\" width=\"46\" height=\"46\" alt=\"\"><i onclick=\"dynamicAddAttachmentTextarea.deleteMarkFile(this)\"></i>" +
+						"</a>";
+					$("#dynamicTextareaFiles").prepend(html);
+					bindAttachView();
+					//6个附件数量限制
+					checkUploadCount();
+
+					if ($model) {
+						$model.hide();
+					}
+				}
+			});
+		};
+		function bindAttachView() {
+			$("#dynamicTextareaFiles").find("a[name='aHref']").each(function() {
+				$(this).unbind("click");
+				$(this).click(function(e) {
+					viewAttach($(this), e);	
+				});
+			});
+		};
+		//弹窗预览附件
+		function viewAttach(obj, e) {
+			if ($(e.target).prop("tagName") == "LI" || $(e.target).prop("tagName") == "li") {
+				return;
+			}
+			var timestamp = $(obj).find("input[name='fileId']").val();
+			var file = fileArgs[timestamp];
+			var param = 
+				"name="+encodeURIComponent(file.name)+
+				"&conversionFileId="+encodeURIComponent(file.conversionFileId)+
+				"&originalFileId="+encodeURIComponent(file.originalFileId);
+			var url = "${basePath}/back/growthRecord/viewAttach.do?"+param;
+			popBox.alert({
+				name:"viewAttach",
+				url:url,
+				width:"900px",
+				height:"570px"
+			});
+		};
+		//获取缩略图
+		function getShortCutUrl(file, extension) {
+			var faceUrl = "";
+			if (file == null) {
+				return faceUrl;
+			}
+			if (file.fileType == 1) {
+				faceUrl = "${basePath}/back/user/getUserPhotoTemp.do?fileId=" + file.originalFileId;
+			} else if (file.fileType == 2) {
+				if (extension == 'doc' || extension == 'docx') {
+					faceUrl = "${basePath}/static/images/icon/ico_word.png";
+				} else if (extension == 'xls' || extension == 'xlsx') {
+					faceUrl = "${basePath}/static/images/icon/ico_excel.png";
+				} else if (extension == 'ppt' || extension == 'pptx') {
+					faceUrl = "${basePath}/static/images/icon/ico_ppt.png";
+				} else if (extension == 'pdf') {
+					faceUrl = "${basePath}/static/images/icon/ico_pdf.png";
+				} else {
+					faceUrl = "${basePath}/static/images/icon/ico_file.png";
+				}
+			} else if (file.fileType == 3) {
+				faceUrl = "${basePath}/static/images/icon/ico_voice.png";
+			} else if (file.fileType == 4) {
+				faceUrl = "${basePath}/static/images/icon/ico_video.png";
+			}
+			return faceUrl;
+		};
+		//删除备注附件
+		function deleteMarkFile(obj) {
+			var $parent = $(obj).parents("a.btnfile");
+			var timestamp = $parent.find("input[name='fileId']").val();
+			//删除附件关系
+			var index = markFileIds.indexOf(timestamp);    
+			if (index >= 0) {
+				markFileIds.splice(index,1); 
+				fileHiddenArray.splice(index,1);
+			}
+			hiddenObj['attachments'] = fileHiddenArray;
+			$('#dynamicTextareaUploadHidden').val(JSON.stringify(hiddenObj));
+			//后台暂时未做删除
+			$parent.remove();
+			checkUploadCount();
+		};
+		
+		function checkUploadCount() {
+			//附件数量限制
+			if (markFileIds.length < ${(field.fileNum)!6}) {
+				$("#dynamicTextareaUpload").parent().show();
+			} else {
+				$("#dynamicTextareaUpload").parent().hide();
+			}
+		};
+		
+		bindMarkFileUpload();//绑定上传附件事件
+		$("a.btnaddfile").click(function() {
+			$('#dynamicTextareaUpload').click();
+		}); 
+		return {
+			deleteMarkFile:deleteMarkFile
+		};
+};
+$(function(){
+	dynamicAddAttachmentTextarea = dynamicAddAttachmentTextarea();
+});
+</script>

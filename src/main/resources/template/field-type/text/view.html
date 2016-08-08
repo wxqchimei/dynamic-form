@@ -1,13 +1,18 @@
+<#if field.columns==1>
 <div style="padding: 10px 0;clear: both;">
+<#else>
+<div style="padding: 10px 0;float: left;width: 50%;">
+</#if>
     <div
         style="display: inline-block; float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right; word-wrap: break-word;">
-        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>
+        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;"><#if field.required>*</#if></em>
         ${field.label!''}：
     </div>
-    <div style="display: inline-block;">
-        <input type="text" name="${field_name_prefix}${field.code}" value="${field.defaultValue!''}"
-            maxlength="${field.maxSize!140}"
-            style="font-size: 14px; width: 343px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 6px 5px;">
+    <div data-content="content" style="display: inline-block;">
+        <input type="text" name="${field_name_prefix}${field.code}" disabled value="${fieldValue.val!(field.defaultValue!'')}"
+            maxlength="${field.maxSize!140}" <#if field.required>required="required"</#if>
+            style="font-size: 14px; width: 200px; display: inline-block; zoom: 1; vertical-align: middle; border: 1px solid #ddd; background: #fff; padding: 6px 5px;">
+        ${field.unit!''}
         <div></div>
     </div>
 </div>

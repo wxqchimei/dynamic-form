@@ -1,0 +1,57 @@
+
+<div style="padding: 10px 0;clear: both;">
+    <div
+        style="float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right;">
+        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;"><#if field.required>*</#if></em>
+        ${field.label!''}起：
+    </div>
+    <div data-content="content" style="margin-left: 120px; line-height: 33px; font-size: 14px;">
+        <input type="text" id="dynamicIntervalBegin" <#if field.required>required="required"</#if>
+        <#if field.dateFormat??>
+        	onfocus="WdatePicker({dateFmt:'${field.dateFormat}',maxDate:'#F{$dp.$D(\'dynamicIntervalEnd\')}',isShowClear:false,readOnly:true})"
+        <#else>
+        	onfocus="WdatePicker({isShowClear:false,maxDate:'#F{$dp.$D(\'dynamicIntervalEnd\')}',readOnly:true})"
+        </#if>
+            style="font-size: 14px; border: #999 1px solid; height: 27px; background: #fff url(http://127.0.0.1:8080/sz-edu-archive-web/static/quest/plugin/My97DatePicker/skin/datePicker.gif) no-repeat right; display: inline-block; zoom: 1; vertical-align: middle; padding: 0px 5px; color: #666;width:200px;">
+        <div name="errormsg" style="color: red;display: block;"></div>
+    </div>
+
+    <div
+            style="float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right;">
+        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;"><#if field.required>*</#if></em>
+        ${field.label!''}止：
+    </div>
+    <div data-content="content" style="margin-left: 120px; line-height: 33px; font-size: 14px;">
+        <input type="text" id="dynamicIntervalEnd" <#if field.required>required="required"</#if>
+        <#if field.dateFormat??>
+            onfocus="WdatePicker({dateFmt:'${field.dateFormat}',minDate:'#F{$dp.$D(\'dynamicIntervalBegin\')}',isShowClear:false,readOnly:true})"
+            <#else>
+                onfocus="WdatePicker({isShowClear:false,minDate:'#F{$dp.$D(\'dynamicIntervalBegin\')}',readOnly:true})"
+        </#if>
+        style="font-size: 14px; border: #999 1px solid; height: 27px; background: #fff url(http://127.0.0.1:8080/sz-edu-archive-web/static/quest/plugin/My97DatePicker/skin/datePicker.gif) no-repeat right; display: inline-block; zoom: 1; vertical-align: middle; padding: 0px 5px; color: #666;width:200px;">
+        <div name="errormsg" style="color: red;display: block;"></div>
+    </div>
+    <input type="hidden" id="dynamicHiddenVal" name="${field_name_prefix}${field.code}">
+</div>
+<script type="text/javascript">
+    var dynamicTimeInterval = function () {
+        var hiddenVal = {};
+        $('#dynamicIntervalBegin').change(function(){
+           var beginVal = $(this).val();
+            if(beginVal){
+                hiddenVal['dynamicIntervalBegin'] = beginVal;
+                $('#dynamichiddenval').val(JSON.stringify(hiddenVal));
+            }
+        });
+        $('#dynamicIntervalEnd').change(function(){
+            var endVal = $(this).val();
+            if(endVal){
+                hiddenVal['dynamicIntervalEnd'] = endVal;
+                $('#dynamichiddenval').val(JSON.stringify(hiddenVal));
+            }
+        });
+    };
+    $(function () {
+       dynamicTimeInterval = dynamicTimeInterval();
+    });
+</script>

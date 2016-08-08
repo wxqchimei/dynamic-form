@@ -13,7 +13,7 @@
     	<#list jsonOpts as opt>
     		<#list opt?keys as key> 
 	    		<label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-	                <input <#if field.required>required="required"</#if> data-validator="${field.validation!''}" type="checkbox" name="${field_name_prefix}${field.code}" value="${key}" style="font-size: 100%;" <#if (fieldValue.val!(field.defaultValue!''))==key>checked="checked"</#if>/>
+	                <input <#if field.required>required="required"</#if> data-validator="${field.validation!''}" type="checkbox" name="${field_name_prefix}${field.code}" value="${key}" style="font-size: 100%;" <#if (field.defaultValue!'')==key>checked="checked"</#if>/>
 	                <em></em> ${opt[key]}
 	            </label>
             </#list>

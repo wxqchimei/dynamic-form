@@ -1,20 +1,24 @@
 <#assign jsonOpts=(field.options!'[]')?eval />
+
+<#if field.columns==1>
 <div style="padding: 10px 0;clear: both;">
+<#else>
+<div style="padding: 10px 0;float: left;width: 50%;">
+</#if>
     <div
         style="float: left; width: 120px; line-height: 33px; color: #333; font-size: 14px; text-align: right;">
-        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;">*</em>${field.label!''}：</div>
-    <div style="margin-left: 120px; line-height: 33px; font-size: 14px;">
-        <div style="margin: 0; padding: 0;line-height: 33px;
-    font-size: 14px;">
+        <em style="padding-right: 5px; color: #f00; font-style: normal; font-weight: 500;"><#if field.required>*</#if></em>${field.label!''}：</div>
+    <div data-content="content" style="margin-left: 120px; line-height: 33px; font-size: 14px;">
+        <div style="margin: 0; padding: 0;line-height: 33px;font-size: 14px;width: 200px;">
     	<#list jsonOpts as opt>
     		<#list opt?keys as key> 
 	    		<label style="margin-left: 12px; line-height: 33px; font-size: 14px;"> 
-	                <input type="radio" name="${field_name_prefix}${field.code}" value="${key}" style="font-size: 100%;"/>
+	                <input type="radio" data-validator="${field.validation!''}" <#if field.required>required="required"</#if> name="${field_name_prefix}${field.code}" value="${key}" <#if (fieldValue.val!(field.defaultValue!''))==key>checked="checked"</#if> style="font-size: 100%;"/>
 	                <em></em> ${opt[key]}
 	            </label>
             </#list>
     	</#list>
         </div>
-        <div style="color: red;height: 15px;display: block;"></div>
+        <div name="errormsg" style="color: red;display: block;"></div>
     </div>
 </div>
