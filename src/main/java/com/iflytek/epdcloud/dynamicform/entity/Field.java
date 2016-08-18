@@ -5,18 +5,23 @@ package com.iflytek.epdcloud.dynamicform.entity;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.iflytek.epdcloud.dynamicform.DynamicFormServer;
 import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
 
 import freemarker.template.TemplateException;
 
 /**
- * @description：
+ * @description：字段属性信息定义实体
  * 
  * @author suenlai
  * @date 2016年7月11日
  */
-public abstract class Field extends Entity {
+public class Field extends Entity {
     /**
      * 
      */
@@ -34,29 +39,49 @@ public abstract class Field extends Entity {
      */
     private FieldType         fieldType;
     /**
+     * 所属表单
+     */
+    private Form              form;
+    /**
      * 一行几列
      */
-    private byte              columns;
+    private byte              columns = 1;
     /**
      * 是否必须
      */
     private boolean           required;
+
     /**
      * 默认值
      */
     private String            defaultValue;
     /**
-     * 宽度
-     */
-    private short             width;
-    /**
-     * 高度
-     */
-    private short             height;
-    /**
      * 顺序
      */
-    private int               sequence;
+    private byte              sequence;
+
+    public String getValidation() {
+        return validation;
+    }
+
+    public void setValidation(String validation) {
+        this.validation = validation;
+    }
+
+    private String            validation;
+    /**
+     * 是否删除，默认是删除状态
+     */
+    private int               delflag = 1;
+
+
+    public Field() {
+
+    }
+
+    public Field(String id) {
+        setId(id);
+    }
 
     /**
      * 
@@ -66,22 +91,39 @@ public abstract class Field extends Entity {
      * @throws IOException
      */
     public void displayConfigHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        String templateName = this.fieldType.getConfigTemplate();
-        printWriter.print(FreemarkerRender.render(templateName, this));
+        printWriter.print(getConfigHtmlPlain());
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getConfigHtmlPlain() throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("field", this);
+        root.put("basePath", DynamicFormServer.BASE_PATH);
+        String templateName = getFieldType().getConfigTemplate();
+        return FreemarkerRender.render(templateName, root);
     }
 
 
-
-    /**
+    /***
      * 
-     * @Description:显示到页面表单
-     * @param printWriter
-     * @throws TemplateException
+     * @Description:显示字段所定义的输入表单项
+     * @param writer
      * @throws IOException
+     * @throws TemplateException
      */
-    public void displayEditHtml(PrintWriter printWriter) throws IOException, TemplateException {
-        String templateName = this.fieldType.getEditTemplate();
-        printWriter.print(FreemarkerRender.render(templateName, this));
+    public void displayAddHtml(Writer writer) throws IOException, TemplateException {
+        writer.write(getAddHtmlPlain());
+    }
+
+    @JSONField(serialize = false, deserialize = false)
+    public String getAddHtmlPlain() throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("field", this);
+        root.put("basePath", DynamicFormServer.BASE_PATH);
+        root.put("field_name_prefix", DynamicFormServer.DYNAMICFIELDHTTPPARAMETERPREFIX);
+
+        String templateName = this.fieldType.getAddTemplate();
+        return FreemarkerRender.render(templateName, root);
     }
 
 
@@ -195,45 +237,9 @@ public abstract class Field extends Entity {
 
 
     /**
-     * @return the width
-     */
-    public short getWidth() {
-        return this.width;
-    }
-
-
-
-    /**
-     * @param width the width to set
-     */
-    public void setWidth(short width) {
-        this.width = width;
-    }
-
-
-
-    /**
-     * @return the height
-     */
-    public short getHeight() {
-        return this.height;
-    }
-
-
-
-    /**
-     * @param height the height to set
-     */
-    public void setHeight(short height) {
-        this.height = height;
-    }
-
-
-
-    /**
      * @return the sequence
      */
-    public int getSequence() {
+    public byte getSequence() {
         return this.sequence;
     }
 
@@ -242,10 +248,30 @@ public abstract class Field extends Entity {
     /**
      * @param sequence the sequence to set
      */
-    public void setSequence(int sequence) {
+    public void setSequence(byte sequence) {
         this.sequence = sequence;
     }
 
+    /**
+     * @return the form
+     */
+    public Form getForm() {
+        return this.form;
+    }
+
+    /**
+     * @param form the form to set
+     */
+    public void setForm(Form form) {
+        this.form = form;
+    }
 
 
+    public int getDelflag() {
+        return delflag;
+    }
+
+    public void setDelflag(int delflag) {
+        this.delflag = delflag;
+    }
 }

@@ -23,6 +23,14 @@ class Entity implements Serializable {
     private String            updateUser;
     private Timestamp         updateTime;
 
+    public Entity() {
+        super();
+    };
+
+    public Entity(String id) {
+        this.id = id;
+    }
+
     /**
      * @return the id
      */

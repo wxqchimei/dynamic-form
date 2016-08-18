@@ -4,7 +4,7 @@
 package com.iflytek.epdcloud.dynamicform.entity;
 
 /**
- * @description：
+ * @description：字段元信息类型
  * 
  * @author suenlai
  * @date 2016年7月11日
@@ -19,24 +19,35 @@ public class FieldType extends Entity {
     private String            name;
     private String            code;
     private String            description;
-    private String            className;
+    private String            fieldClassName;
     private String            configTemplate;
     private String            editTemplate;
+    private String            viewTemplate;
+    private String            addTemplate;
+
+    public FieldType() {
+
+    }
 
     /**
      * @param name
      * @param description
      * @param className
      */
-    public FieldType(String name, String code, String description, String className,
-            String configTemplate, String editTemplate) {
-        super();
+    public FieldType(String name, String code, String description, String fieldClassName,
+            String configTemplate, String editTemplate, String viewTemplate, String addTemplate) {
         this.name = name;
         this.code = code;
         this.description = description;
-        this.className = className;
+        this.fieldClassName = fieldClassName;
         this.configTemplate = configTemplate;
         this.editTemplate = editTemplate;
+        this.viewTemplate = viewTemplate;
+        this.addTemplate = addTemplate;
+    }
+
+    public FieldType(String code) {
+        this.code = code;
     }
 
     /**
@@ -53,6 +64,20 @@ public class FieldType extends Entity {
         this.name = name;
     }
 
+
+    /**
+     * @return the fieldClassName
+     */
+    public String getFieldClassName() {
+        return this.fieldClassName;
+    }
+
+    /**
+     * @param fieldClassName the fieldClassName to set
+     */
+    public void setFieldClassName(String fieldClassName) {
+        this.fieldClassName = fieldClassName;
+    }
 
     /**
      * @return the code
@@ -82,19 +107,6 @@ public class FieldType extends Entity {
         this.description = description;
     }
 
-    /**
-     * @return the className
-     */
-    public String getClassName() {
-        return this.className;
-    }
-
-    /**
-     * @param className the className to set
-     */
-    public void setClassName(String className) {
-        this.className = className;
-    }
 
     /**
      * @return the configTemplate
@@ -124,6 +136,32 @@ public class FieldType extends Entity {
         this.editTemplate = editTemplate;
     }
 
+    /**
+     * @return the viewTemplate
+     */
+    public String getViewTemplate() {
+        return this.viewTemplate;
+    }
 
+    /**
+     * @param viewTemplate the viewTemplate to set
+     */
+    public void setViewTemplate(String viewTemplate) {
+        this.viewTemplate = viewTemplate;
+    }
+
+    /**
+     * @return the addTemplate
+     */
+    public String getAddTemplate() {
+        return this.addTemplate;
+    }
+
+    /**
+     * @param addTemplate the addTemplate to set
+     */
+    public void setAddTemplate(String addTemplate) {
+        this.addTemplate = addTemplate;
+    }
 
 }

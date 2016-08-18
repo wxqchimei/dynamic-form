@@ -4,9 +4,15 @@
 package com.iflytek.epdcloud.dynamicform.entity;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.Writer;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.iflytek.epdcloud.dynamicform.FreemarkerRender;
 
 import freemarker.template.TemplateException;
 
@@ -24,56 +30,82 @@ public class Form extends Entity {
     /**
      * 分类,活动还是动态
      */
-    private byte              category;
+    private String            entityName;
     /**
-     * 指标ID
+     * 在category中唯一的编号, 在此指所关联的指标ID
      */
-    private int               indicatorId;
+    private String            code;
     /**
      * 字段列表
      */
     private List<Field>       fields           = new LinkedList<Field>();
 
+    public Form(String id) {
+        super(id);
+    }
+
+    public Form(String entityName, String code) {
+        super();
+        this.entityName = entityName;
+        this.code = code;
+    }
+
     /**
      * 
      * 
-     * @Description:显示到页面表单
+     * @Description:表单添加的模板
      * @return
      * @throws TemplateException
      * @throws IOException
      */
-    public void displayEditHtml(PrintWriter printWriter) throws IOException, TemplateException {
+    public void displayAddHtml(Writer writer) throws IOException, TemplateException {
         for (Field f : this.fields) {
-            f.displayEditHtml(printWriter);
+            f.displayAddHtml(writer);
         }
     }
 
     /**
-     * @return the category
+     * 
+     * 
+     * @Description:配置表单的模板
+     * @return
+     * @throws TemplateException
+     * @throws IOException
      */
-    public byte getCategory() {
-        return this.category;
+    public void displayConfigHtml(Writer writer) throws IOException, TemplateException {
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("form", this);
+        FreemarkerRender.render(writer, "form/config.html", root);
     }
 
     /**
-     * @param category the category to set
+     * @return the entityName
      */
-    public void setCategory(byte category) {
-        this.category = category;
+    public String getEntityName() {
+        return this.entityName;
     }
 
     /**
-     * @return the indicatorId
+     * @param entityName the entityName to set
      */
-    public int getIndicatorId() {
-        return this.indicatorId;
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
+    }
+
+
+
+    /**
+     * @return the code
+     */
+    public String getCode() {
+        return this.code;
     }
 
     /**
-     * @param indicatorId the indicatorId to set
+     * @param code the code to set
      */
-    public void setIndicatorId(int indicatorId) {
-        this.indicatorId = indicatorId;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     /**
@@ -88,6 +120,20 @@ public class Form extends Entity {
      */
     public void setFields(List<Field> fields) {
         this.fields = fields;
+    }
+
+    /**
+     * @Description:根据字段编码来查找相应的字段
+     * @param key
+     * @return
+     */
+    public Field findFieldBy(String fieldCode) {
+        for (Field f : fields) {
+            if (StringUtils.equals(f.getCode(), fieldCode)) {
+                return f;
+            }
+        }
+        return null;
     }
 
 

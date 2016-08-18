@@ -10,18 +10,18 @@ package com.iflytek.epdcloud.dynamicform.entity;
  * @author suenlai
  * @date 2016年7月11日
  */
-public class SelectField extends Field {
+public class AttachmentField extends Field {
     /**
      * 
      */
     private static final long serialVersionUID = 857082671538993802L;
-    private String     options;
-    public String getOptions() {
-        return options;
+    private int     fileNum = 6;
+    public int getFileNum() {
+        return fileNum;
     }
-    public void setOptions(String options) {
-        this.options = options;
+    public void setFileNum(int fileNum) {
+        this.fileNum = fileNum;
     }
-
+    
 
 }

@@ -3,25 +3,36 @@
  */
 package com.iflytek.epdcloud.dynamicform.entity;
 
-
 /**
  * @description：
  * 
  * @author suenlai
  * @date 2016年7月11日
  */
-public class SelectField extends Field {
+public class RadioBoxField extends Field {
     /**
      * 
      */
     private static final long serialVersionUID = 857082671538993802L;
-    private String     options;
+    /**
+     * json数组字符串
+     */
+    private String            options;
+
+    /**
+     * @return the options
+     */
     public String getOptions() {
-        return options;
+        return this.options;
     }
+
+    /**
+     * @param options the options to set
+     */
     public void setOptions(String options) {
         this.options = options;
     }
+
 
 
 }
